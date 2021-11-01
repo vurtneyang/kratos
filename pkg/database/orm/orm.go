@@ -4,9 +4,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/VurtneYang/kratos/pkg/ecode"
-	"github.com/VurtneYang/kratos/pkg/log"
-	xtime "github.com/VurtneYang/kratos/pkg/time"
+	"github.com/vurtneyang/kratos/pkg/ecode"
+	"github.com/vurtneyang/kratos/pkg/log"
+	xtime "github.com/vurtneyang/kratos/pkg/time"
 
 	// database driver
 	_ "github.com/go-sql-driver/mysql"

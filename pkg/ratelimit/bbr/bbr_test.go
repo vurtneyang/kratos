@@ -11,8 +11,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/VurtneYang/kratos/pkg/ratelimit"
-	"github.com/VurtneYang/kratos/pkg/stat/metric"
+	"github.com/vurtneyang/kratos/pkg/ratelimit"
+	"github.com/vurtneyang/kratos/pkg/stat/metric"
 )
 
 func confForTest() *Config {

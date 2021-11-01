@@ -3,8 +3,8 @@ package dsn_test
 import (
 	"log"
 
-	"github.com/VurtneYang/kratos/pkg/conf/dsn"
-	xtime "github.com/VurtneYang/kratos/pkg/time"
+	"github.com/vurtneyang/kratos/pkg/conf/dsn"
+	xtime "github.com/vurtneyang/kratos/pkg/time"
 )
 
 // Config struct

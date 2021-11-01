@@ -8,7 +8,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/VurtneYang/kratos/pkg/net/trace"
+	"github.com/vurtneyang/kratos/pkg/net/trace"
 )
 
 const testTraceSlowLogThreshold = 250 * time.Millisecond

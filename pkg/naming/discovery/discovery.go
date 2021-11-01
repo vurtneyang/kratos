@@ -13,12 +13,12 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/VurtneYang/kratos/pkg/conf/env"
-	"github.com/VurtneYang/kratos/pkg/ecode"
-	"github.com/VurtneYang/kratos/pkg/log"
-	"github.com/VurtneYang/kratos/pkg/naming"
-	http "github.com/VurtneYang/kratos/pkg/net/http/blademaster"
-	xtime "github.com/VurtneYang/kratos/pkg/time"
+	"github.com/vurtneyang/kratos/pkg/conf/env"
+	"github.com/vurtneyang/kratos/pkg/ecode"
+	"github.com/vurtneyang/kratos/pkg/log"
+	"github.com/vurtneyang/kratos/pkg/naming"
+	http "github.com/vurtneyang/kratos/pkg/net/http/blademaster"
+	xtime "github.com/vurtneyang/kratos/pkg/time"
 )
 
 const (

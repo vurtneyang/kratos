@@ -9,8 +9,8 @@ import (
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"google.golang.org/genproto/googleapis/api/annotations"
 
-	"github.com/VurtneYang/kratos/tool/protobuf/pkg/tag"
-	"github.com/VurtneYang/kratos/tool/protobuf/pkg/typemap"
+	"github.com/vurtneyang/kratos/tool/protobuf/pkg/tag"
+	"github.com/vurtneyang/kratos/tool/protobuf/pkg/typemap"
 )
 
 // HTTPInfo http info for method

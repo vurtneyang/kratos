@@ -2,7 +2,7 @@
 
 执行
 ```shell
-go get -u github.com/VurtneYang/kratos/tool/kratos
+go get -u github.com/vurtneyang/kratos/tool/kratos
 ```
 出现以下错误时
 ```shell

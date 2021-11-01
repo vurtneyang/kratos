@@ -7,13 +7,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/VurtneYang/kratos/pkg/conf/env"
-	"github.com/VurtneYang/kratos/pkg/naming"
-	"github.com/VurtneYang/kratos/pkg/net/netutil/breaker"
-	"github.com/VurtneYang/kratos/pkg/net/rpc/warden"
-	pb "github.com/VurtneYang/kratos/pkg/net/rpc/warden/internal/proto/testproto"
-	"github.com/VurtneYang/kratos/pkg/net/rpc/warden/resolver"
-	xtime "github.com/VurtneYang/kratos/pkg/time"
+	"github.com/vurtneyang/kratos/pkg/conf/env"
+	"github.com/vurtneyang/kratos/pkg/naming"
+	"github.com/vurtneyang/kratos/pkg/net/netutil/breaker"
+	"github.com/vurtneyang/kratos/pkg/net/rpc/warden"
+	pb "github.com/vurtneyang/kratos/pkg/net/rpc/warden/internal/proto/testproto"
+	"github.com/vurtneyang/kratos/pkg/net/rpc/warden/resolver"
+	xtime "github.com/vurtneyang/kratos/pkg/time"
 
 	"github.com/stretchr/testify/assert"
 )

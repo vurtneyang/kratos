@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/VurtneYang/kratos/pkg/conf/paladin"
-	"github.com/VurtneYang/kratos/pkg/conf/paladin/apollo"
+	"github.com/vurtneyang/kratos/pkg/conf/paladin"
+	"github.com/vurtneyang/kratos/pkg/conf/paladin/apollo"
 
 	"github.com/BurntSushi/toml"
 )

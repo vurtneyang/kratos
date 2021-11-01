@@ -6,7 +6,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/VurtneYang/kratos/pkg/container/pool"
+	"github.com/vurtneyang/kratos/pkg/container/pool"
 )
 
 // Pool memcache connection pool struct.

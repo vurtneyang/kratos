@@ -48,7 +48,7 @@ d = &dao{
 }
 ```
 
-使用github.com/VurtneYang/kratos/pkg/database/sql包的NewMySQL方法进行连接池对象的初始化，需要传入上文解析的配置。
+使用github.com/vurtneyang/kratos/pkg/database/sql包的NewMySQL方法进行连接池对象的初始化，需要传入上文解析的配置。
 
 ## Ping
 
@@ -150,7 +150,7 @@ Result接口支持获取影响行数和LastInsertId（一般用于获取Insert�
 
 ## 事务
 
-github.com/VurtneYang/kratos/pkg/database/sql包支持事务操作，具体操作示例如下：
+github.com/vurtneyang/kratos/pkg/database/sql包支持事务操作，具体操作示例如下：
 
 开启一个事务：
 

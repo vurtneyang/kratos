@@ -15,10 +15,10 @@ import (
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/pkg/errors"
 
-	"github.com/VurtneYang/kratos/tool/protobuf/pkg/gen"
-	"github.com/VurtneYang/kratos/tool/protobuf/pkg/naming"
-	"github.com/VurtneYang/kratos/tool/protobuf/pkg/typemap"
-	"github.com/VurtneYang/kratos/tool/protobuf/pkg/utils"
+	"github.com/vurtneyang/kratos/tool/protobuf/pkg/gen"
+	"github.com/vurtneyang/kratos/tool/protobuf/pkg/naming"
+	"github.com/vurtneyang/kratos/tool/protobuf/pkg/typemap"
+	"github.com/vurtneyang/kratos/tool/protobuf/pkg/utils"
 )
 
 const Version = "v0.1"

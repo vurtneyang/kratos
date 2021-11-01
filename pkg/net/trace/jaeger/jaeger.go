@@ -1,8 +1,8 @@
 package jaeger
 
 import (
-	"github.com/VurtneYang/kratos/pkg/log"
-	"github.com/VurtneYang/kratos/pkg/net/trace"
+	"github.com/vurtneyang/kratos/pkg/log"
+	"github.com/vurtneyang/kratos/pkg/net/trace"
 )
 
 type Config struct {

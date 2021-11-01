@@ -6,8 +6,8 @@ package api
 import (
 	"context"
 
-	bm "github.com/VurtneYang/kratos/pkg/net/http/blademaster"
-	"github.com/VurtneYang/kratos/pkg/net/http/blademaster/binding"
+	bm "github.com/vurtneyang/kratos/pkg/net/http/blademaster"
+	"github.com/vurtneyang/kratos/pkg/net/http/blademaster/binding"
 )
 import google_protobuf1 "github.com/golang/protobuf/ptypes/empty"
 

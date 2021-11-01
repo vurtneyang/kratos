@@ -6,13 +6,13 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/VurtneYang/kratos/pkg/container/group"
-	"github.com/VurtneYang/kratos/pkg/ecode"
-	"github.com/VurtneYang/kratos/pkg/log"
-	limit "github.com/VurtneYang/kratos/pkg/ratelimit"
-	"github.com/VurtneYang/kratos/pkg/stat/metric"
+	"github.com/vurtneyang/kratos/pkg/container/group"
+	"github.com/vurtneyang/kratos/pkg/ecode"
+	"github.com/vurtneyang/kratos/pkg/log"
+	limit "github.com/vurtneyang/kratos/pkg/ratelimit"
+	"github.com/vurtneyang/kratos/pkg/stat/metric"
 
-	cpustat "github.com/VurtneYang/kratos/pkg/stat/sys/cpu"
+	cpustat "github.com/vurtneyang/kratos/pkg/stat/sys/cpu"
 )
 
 var (

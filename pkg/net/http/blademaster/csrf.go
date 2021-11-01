@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/VurtneYang/kratos/pkg/log"
+	"github.com/vurtneyang/kratos/pkg/log"
 )
 
 func matchHostSuffix(suffix string) func(*url.URL) bool {

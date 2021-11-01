@@ -35,8 +35,8 @@ package grpc
 import (
 	pb "kratos-demo/api"
 	"kratos-demo/internal/service"
-	"github.com/VurtneYang/kratos/pkg/conf/paladin"
-	"github.com/VurtneYang/kratos/pkg/net/rpc/warden"
+	"github.com/vurtneyang/kratos/pkg/conf/paladin"
+	"github.com/vurtneyang/kratos/pkg/net/rpc/warden"
 )
 
 // New new a grpc server.
@@ -99,7 +99,7 @@ package dao
 import (
 	"context"
 
-	"github.com/VurtneYang/kratos/pkg/net/rpc/warden"
+	"github.com/vurtneyang/kratos/pkg/net/rpc/warden"
 
 	"google.golang.org/grpc"
 )
@@ -131,7 +131,7 @@ package dao
 import(
 	demoapi "kratos-demo/api"
 	grpcempty "github.com/golang/protobuf/ptypes/empty"
-	"github.com/VurtneYang/kratos/pkg/net/rpc/warden"
+	"github.com/vurtneyang/kratos/pkg/net/rpc/warden"
 
 	"github.com/pkg/errors"
 )

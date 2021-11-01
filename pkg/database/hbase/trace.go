@@ -6,7 +6,7 @@ import (
 
 	"github.com/tsuna/gohbase/hrpc"
 
-	"github.com/VurtneYang/kratos/pkg/net/trace"
+	"github.com/vurtneyang/kratos/pkg/net/trace"
 )
 
 // TraceHook create new hbase trace hook.

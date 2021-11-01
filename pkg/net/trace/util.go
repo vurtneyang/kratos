@@ -6,8 +6,8 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/VurtneYang/kratos/pkg/conf/env"
-	"github.com/VurtneYang/kratos/pkg/net/ip"
+	"github.com/vurtneyang/kratos/pkg/conf/env"
+	"github.com/vurtneyang/kratos/pkg/net/ip"
 
 	"github.com/pkg/errors"
 )
@@ -44,7 +44,7 @@ type stackTracer interface {
 
 type ctxKey string
 
-var _ctxkey ctxKey = "github.com/VurtneYang/kratos/pkg/net/trace.trace"
+var _ctxkey ctxKey = "github.com/vurtneyang/kratos/pkg/net/trace.trace"
 
 // FromContext returns the trace bound to the context, if any.
 func FromContext(ctx context.Context) (t Trace, ok bool) {

@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/VurtneYang/kratos/pkg/container/pool"
-	"github.com/VurtneYang/kratos/pkg/testing/lich"
-	xtime "github.com/VurtneYang/kratos/pkg/time"
+	"github.com/vurtneyang/kratos/pkg/container/pool"
+	"github.com/vurtneyang/kratos/pkg/testing/lich"
+	xtime "github.com/vurtneyang/kratos/pkg/time"
 )
 
 var (

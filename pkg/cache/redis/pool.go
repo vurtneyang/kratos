@@ -25,9 +25,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/VurtneYang/kratos/pkg/container/pool"
-	"github.com/VurtneYang/kratos/pkg/net/trace"
-	xtime "github.com/VurtneYang/kratos/pkg/time"
+	"github.com/vurtneyang/kratos/pkg/container/pool"
+	"github.com/vurtneyang/kratos/pkg/net/trace"
+	xtime "github.com/vurtneyang/kratos/pkg/time"
 )
 
 var beginTime, _ = time.Parse("2006-01-02 15:04:05", "2006-01-02 15:04:05")

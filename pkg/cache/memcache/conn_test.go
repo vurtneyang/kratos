@@ -7,7 +7,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	test "github.com/VurtneYang/kratos/pkg/cache/memcache/test"
+	test "github.com/vurtneyang/kratos/pkg/cache/memcache/test"
 )
 
 func TestConnRaw(t *testing.T) {

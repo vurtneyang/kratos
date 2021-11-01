@@ -12,7 +12,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/VurtneYang/kratos/pkg/log"
+	"github.com/vurtneyang/kratos/pkg/log"
 )
 
 var (

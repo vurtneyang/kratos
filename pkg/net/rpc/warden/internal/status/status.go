@@ -4,7 +4,7 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/VurtneYang/kratos/pkg/ecode"
+	"github.com/vurtneyang/kratos/pkg/ecode"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/pkg/errors"

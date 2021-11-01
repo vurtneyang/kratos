@@ -6,7 +6,7 @@ kratos包含了一批好用的工具集，比如项目一键生成、基于proto
 
 执行以下命令，即可快速安装好`kratos`工具
 ```shell
-go get -u github.com/VurtneYang/kratos/tool/kratos
+go get -u github.com/vurtneyang/kratos/tool/kratos
 ```
 
 那么接下来让我们快速开始熟悉工具的用法~

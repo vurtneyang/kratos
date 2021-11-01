@@ -14,7 +14,7 @@ import (
 	"strings"
 	"text/template"
 
-	common "github.com/VurtneYang/kratos/tool/pkg"
+	common "github.com/vurtneyang/kratos/tool/pkg"
 )
 
 var (

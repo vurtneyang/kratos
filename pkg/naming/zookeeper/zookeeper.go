@@ -14,9 +14,9 @@ import (
 
 	"github.com/go-zookeeper/zk"
 
-	"github.com/VurtneYang/kratos/pkg/log"
-	"github.com/VurtneYang/kratos/pkg/naming"
-	xtime "github.com/VurtneYang/kratos/pkg/time"
+	"github.com/vurtneyang/kratos/pkg/log"
+	"github.com/vurtneyang/kratos/pkg/naming"
+	xtime "github.com/vurtneyang/kratos/pkg/time"
 )
 
 // Config is zookeeper config.

@@ -7,7 +7,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/VurtneYang/kratos/pkg/conf/dsn"
+	"github.com/vurtneyang/kratos/pkg/conf/dsn"
 
 	"github.com/pkg/errors"
 )

@@ -7,10 +7,10 @@ import (
 
 	"google.golang.org/grpc"
 
-	"github.com/VurtneYang/kratos/pkg/log"
-	limit "github.com/VurtneYang/kratos/pkg/ratelimit"
-	"github.com/VurtneYang/kratos/pkg/ratelimit/bbr"
-	"github.com/VurtneYang/kratos/pkg/stat/metric"
+	"github.com/vurtneyang/kratos/pkg/log"
+	limit "github.com/vurtneyang/kratos/pkg/ratelimit"
+	"github.com/vurtneyang/kratos/pkg/ratelimit/bbr"
+	"github.com/vurtneyang/kratos/pkg/stat/metric"
 )
 
 var (

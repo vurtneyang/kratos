@@ -6,11 +6,11 @@ import (
 	"io"
 	"time"
 
-	"github.com/VurtneYang/kratos/pkg/log"
-	"github.com/VurtneYang/kratos/pkg/net/netutil/breaker"
-	"github.com/VurtneYang/kratos/pkg/net/rpc/warden"
-	pb "github.com/VurtneYang/kratos/pkg/net/rpc/warden/internal/proto/testproto"
-	xtime "github.com/VurtneYang/kratos/pkg/time"
+	"github.com/vurtneyang/kratos/pkg/log"
+	"github.com/vurtneyang/kratos/pkg/net/netutil/breaker"
+	"github.com/vurtneyang/kratos/pkg/net/rpc/warden"
+	pb "github.com/vurtneyang/kratos/pkg/net/rpc/warden/internal/proto/testproto"
+	xtime "github.com/vurtneyang/kratos/pkg/time"
 
 	"google.golang.org/grpc"
 )

@@ -1,7 +1,7 @@
 package fanout
 
 import (
-	"github.com/VurtneYang/kratos/pkg/stat/metric"
+	"github.com/vurtneyang/kratos/pkg/stat/metric"
 )
 
 const (

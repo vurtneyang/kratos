@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/VurtneYang/kratos/pkg/conf/paladin"
+	"github.com/vurtneyang/kratos/pkg/conf/paladin"
 
 	sls "github.com/aliyun/aliyun-log-go-sdk"
 	"github.com/aliyun/aliyun-log-go-sdk/producer"

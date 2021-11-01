@@ -8,11 +8,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/VurtneYang/kratos/pkg/conf/env"
+	"github.com/vurtneyang/kratos/pkg/conf/env"
 
-	"github.com/VurtneYang/kratos/pkg/log"
-	nmd "github.com/VurtneYang/kratos/pkg/net/metadata"
-	wmd "github.com/VurtneYang/kratos/pkg/net/rpc/warden/internal/metadata"
+	"github.com/vurtneyang/kratos/pkg/log"
+	nmd "github.com/vurtneyang/kratos/pkg/net/metadata"
+	wmd "github.com/vurtneyang/kratos/pkg/net/rpc/warden/internal/metadata"
 
 	"google.golang.org/grpc/balancer"
 	"google.golang.org/grpc/balancer/base"

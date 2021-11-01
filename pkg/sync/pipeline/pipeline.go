@@ -7,9 +7,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/VurtneYang/kratos/pkg/net/metadata"
-	"github.com/VurtneYang/kratos/pkg/stat/metric"
-	xtime "github.com/VurtneYang/kratos/pkg/time"
+	"github.com/vurtneyang/kratos/pkg/net/metadata"
+	"github.com/vurtneyang/kratos/pkg/stat/metric"
+	xtime "github.com/vurtneyang/kratos/pkg/time"
 )
 
 // ErrFull channel full error

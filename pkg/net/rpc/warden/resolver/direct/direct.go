@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/VurtneYang/kratos/pkg/conf/env"
-	"github.com/VurtneYang/kratos/pkg/naming"
-	"github.com/VurtneYang/kratos/pkg/net/rpc/warden/resolver"
+	"github.com/vurtneyang/kratos/pkg/conf/env"
+	"github.com/vurtneyang/kratos/pkg/naming"
+	"github.com/vurtneyang/kratos/pkg/net/rpc/warden/resolver"
 )
 
 const (
