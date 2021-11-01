@@ -1,4 +1,4 @@
-module github.com/VurtneYang/kratos/
+module github.com/VurtneYang/kratos
 
 go 1.13
 
