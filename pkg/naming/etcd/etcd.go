@@ -16,8 +16,8 @@ import (
 	"go.etcd.io/etcd/client/v3"
 	"google.golang.org/grpc"
 
-	"github.com/vurtneyang/kratos/pkg/log"
-	"github.com/vurtneyang/kratos/pkg/naming"
+	"kratos/pkg/log"
+	"kratos/pkg/naming"
 )
 
 var (

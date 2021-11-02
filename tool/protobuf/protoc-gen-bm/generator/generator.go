@@ -10,11 +10,11 @@ import (
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 
-	"github.com/vurtneyang/kratos/tool/protobuf/pkg/generator"
-	"github.com/vurtneyang/kratos/tool/protobuf/pkg/naming"
-	"github.com/vurtneyang/kratos/tool/protobuf/pkg/tag"
-	"github.com/vurtneyang/kratos/tool/protobuf/pkg/typemap"
-	"github.com/vurtneyang/kratos/tool/protobuf/pkg/utils"
+	"kratos/tool/protobuf/pkg/generator"
+	"kratos/tool/protobuf/pkg/naming"
+	"kratos/tool/protobuf/pkg/tag"
+	"kratos/tool/protobuf/pkg/typemap"
+	"kratos/tool/protobuf/pkg/utils"
 )
 
 type bm struct {
@@ -88,7 +88,7 @@ func (t *bm) generateFileHeader(file *descriptor.FileDescriptorProto, pkgName st
 			// doc for the first file
 			t.P("/*")
 			t.P("Package ", t.GenPkgName, " is a generated blademaster stub package.")
-			t.P("This code was generated with github.com/vurtneyang/kratos/tool/protobuf/protoc-gen-bm ", generator.Version, ".")
+			t.P("This code was generated with kratos/tool/protobuf/protoc-gen-bm ", generator.Version, ".")
 			t.P()
 			for _, line := range strings.Split(comment.Leading, "\n") {
 				line = strings.TrimPrefix(line, " ")
@@ -116,8 +116,8 @@ func (t *bm) generateImports(file *descriptor.FileDescriptorProto) {
 	//t.P(`	`,t.pkgs["context"], ` "context"`)
 	t.P(`	"context"`)
 	t.P()
-	t.P(`	bm "github.com/vurtneyang/kratos/pkg/net/http/blademaster"`)
-	t.P(`	"github.com/vurtneyang/kratos/pkg/net/http/blademaster/binding"`)
+	t.P(`	bm "kratos/pkg/net/http/blademaster"`)
+	t.P(`	"kratos/pkg/net/http/blademaster/binding"`)
 
 	t.P(`)`)
 	// It's legal to import a message and use it as an input or output for a

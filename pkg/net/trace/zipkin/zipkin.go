@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"time"
 
-	protogen "github.com/vurtneyang/kratos/pkg/net/trace/proto"
+	protogen "kratos/pkg/net/trace/proto"
 
 	"github.com/openzipkin/zipkin-go/model"
 	"github.com/openzipkin/zipkin-go/reporter"
 	"github.com/openzipkin/zipkin-go/reporter/http"
 
-	"github.com/vurtneyang/kratos/pkg/net/trace"
+	"kratos/pkg/net/trace"
 )
 
 type report struct {

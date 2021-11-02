@@ -3,7 +3,7 @@ package tidb
 import (
 	"time"
 
-	"github.com/vurtneyang/kratos/pkg/log"
+	"kratos/pkg/log"
 )
 
 func (db *DB) nodeproc(e <-chan struct{}) {

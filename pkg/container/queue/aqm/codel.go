@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/vurtneyang/kratos/pkg/ecode"
+	"kratos/pkg/ecode"
 )
 
 // Config codel config.

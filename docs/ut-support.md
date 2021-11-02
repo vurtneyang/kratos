@@ -429,7 +429,7 @@ mockgen -source=path/to/your/interface/file.go
 mockgen database/sql/driver Conn,Driver
   
 ## 示例：
-mockgen -destination=$GOPATH/github.com/vurtneyang/kratos/app/xxx/dao/dao_mock.go -package=dao github.com/vurtneyang/kratos/app/xxx/dao DaoInterface
+mockgen -destination=$GOPATH/kratos/app/xxx/dao/dao_mock.go -package=dao kratos/app/xxx/dao DaoInterface
 ```
 - testgen 使用步骤（GoMock生成功能已集成在Creater工具中，无需额外安装步骤即可直接使用）
 ```shell

@@ -5,9 +5,9 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/vurtneyang/kratos/pkg/log"
-	"github.com/vurtneyang/kratos/pkg/net/rpc/warden"
-	pb "github.com/vurtneyang/kratos/pkg/net/rpc/warden/internal/proto/testproto"
+	"kratos/pkg/log"
+	"kratos/pkg/net/rpc/warden"
+	pb "kratos/pkg/net/rpc/warden/internal/proto/testproto"
 )
 
 // usage: ./client -grpc.target=test.service=127.0.0.1:9000

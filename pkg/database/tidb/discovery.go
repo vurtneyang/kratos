@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/vurtneyang/kratos/pkg/conf/env"
-	"github.com/vurtneyang/kratos/pkg/log"
-	"github.com/vurtneyang/kratos/pkg/naming"
-	"github.com/vurtneyang/kratos/pkg/naming/discovery"
+	"kratos/pkg/conf/env"
+	"kratos/pkg/log"
+	"kratos/pkg/naming"
+	"kratos/pkg/naming/discovery"
 )
 
 var _schema = "tidb://"

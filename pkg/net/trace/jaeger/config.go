@@ -4,8 +4,8 @@ import (
 	"flag"
 	"os"
 
-	"github.com/vurtneyang/kratos/pkg/conf/env"
-	"github.com/vurtneyang/kratos/pkg/net/trace"
+	"kratos/pkg/conf/env"
+	"kratos/pkg/net/trace"
 )
 
 var (

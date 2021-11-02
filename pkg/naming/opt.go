@@ -8,8 +8,8 @@ import (
 	"os"
 	"sort"
 
-	"github.com/vurtneyang/kratos/pkg/conf/env"
-	"github.com/vurtneyang/kratos/pkg/log"
+	"kratos/pkg/conf/env"
+	"kratos/pkg/log"
 
 	"github.com/dgryski/go-farm"
 )

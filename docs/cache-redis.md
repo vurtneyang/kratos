@@ -49,7 +49,7 @@ d = &dao{
 }
 ```
 
-使用github.com/vurtneyang/kratos/pkg/cache/redis包的NewPool方法进行连接池对象的初始化，需要传入上文解析的配置。
+使用kratos/pkg/cache/redis包的NewPool方法进行连接池对象的初始化，需要传入上文解析的配置。
 
 ## Ping
 
@@ -103,7 +103,7 @@ func (d *dao) DemoIncrby(c context.Context, pid int) (err error) {
 
 ## 批量发送命令 Pipeline
 
-github.com/vurtneyang/kratos/pkg/cache/redis包除了支持发送单个命令，也支持批量发送命令（redis pipeline)，比如：
+kratos/pkg/cache/redis包除了支持发送单个命令，也支持批量发送命令（redis pipeline)，比如：
 
 ```go
 // DemoIncrbys .
@@ -138,9 +138,9 @@ func (d *dao) DemoIncrbys(c context.Context, pid int) (err error) {
 
 ## 返回值转换 
 
-github.com/vurtneyang/kratos/pkg/cache/redis包中也提供了Scan方法将redis server的返回值转换为golang类型。
+kratos/pkg/cache/redis包中也提供了Scan方法将redis server的返回值转换为golang类型。
 
-除此之外，github.com/vurtneyang/kratos/pkg/cache/redis包提供了大量返回值转换的快捷方式:
+除此之外，kratos/pkg/cache/redis包提供了大量返回值转换的快捷方式:
 
 ### 单个查询 
 

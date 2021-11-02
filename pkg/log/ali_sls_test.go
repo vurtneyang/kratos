@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/vurtneyang/kratos/pkg/conf/env"
+	"kratos/pkg/conf/env"
 )
 
 func TestMain(m *testing.M) {

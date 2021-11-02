@@ -9,7 +9,7 @@ import (
 	"github.com/tsuna/gohbase"
 	"github.com/tsuna/gohbase/hrpc"
 
-	"github.com/vurtneyang/kratos/pkg/stat/metric"
+	"kratos/pkg/stat/metric"
 )
 
 const namespace = "hbase_client"

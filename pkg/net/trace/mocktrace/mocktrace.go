@@ -1,7 +1,7 @@
 package mocktrace
 
 import (
-	"github.com/vurtneyang/kratos/pkg/net/trace"
+	"kratos/pkg/net/trace"
 )
 
 // MockTrace .

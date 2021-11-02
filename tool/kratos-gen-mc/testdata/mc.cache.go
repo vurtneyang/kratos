@@ -46,8 +46,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/vurtneyang/kratos/pkg/cache/memcache"
-	"github.com/vurtneyang/kratos/pkg/log"
+	"kratos/pkg/cache/memcache"
+	"kratos/pkg/log"
 )
 
 var (

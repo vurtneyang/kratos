@@ -16,11 +16,11 @@ import (
 	"google.golang.org/grpc/resolver"
 	"google.golang.org/grpc/status"
 
-	"github.com/vurtneyang/kratos/pkg/conf/env"
-	"github.com/vurtneyang/kratos/pkg/log"
-	nmd "github.com/vurtneyang/kratos/pkg/net/metadata"
-	wmeta "github.com/vurtneyang/kratos/pkg/net/rpc/warden/internal/metadata"
-	"github.com/vurtneyang/kratos/pkg/stat/metric"
+	"kratos/pkg/conf/env"
+	"kratos/pkg/log"
+	nmd "kratos/pkg/net/metadata"
+	wmeta "kratos/pkg/net/rpc/warden/internal/metadata"
+	"kratos/pkg/stat/metric"
 )
 
 var _ base.PickerBuilder = &wrrPickerBuilder{}

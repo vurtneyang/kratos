@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/vurtneyang/kratos/pkg/log/internal/filewriter"
+	"kratos/pkg/log/internal/filewriter"
 )
 
 // level idx

@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	xtime "github.com/vurtneyang/kratos/pkg/time"
+	xtime "kratos/pkg/time"
 )
 
 func TestGroup(t *testing.T) {

@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	criticalityPkg "github.com/vurtneyang/kratos/pkg/net/criticality"
-	"github.com/vurtneyang/kratos/pkg/net/metadata"
-	xtime "github.com/vurtneyang/kratos/pkg/time"
+	criticalityPkg "kratos/pkg/net/criticality"
+	"kratos/pkg/net/metadata"
+	xtime "kratos/pkg/time"
 
 	"github.com/stretchr/testify/assert"
 )

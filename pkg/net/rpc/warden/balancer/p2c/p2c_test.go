@@ -10,10 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/vurtneyang/kratos/pkg/conf/env"
+	"kratos/pkg/conf/env"
 
-	nmd "github.com/vurtneyang/kratos/pkg/net/metadata"
-	wmeta "github.com/vurtneyang/kratos/pkg/net/rpc/warden/internal/metadata"
+	nmd "kratos/pkg/net/metadata"
+	wmeta "kratos/pkg/net/rpc/warden/internal/metadata"
 
 	"google.golang.org/grpc/balancer"
 	"google.golang.org/grpc/balancer/base"

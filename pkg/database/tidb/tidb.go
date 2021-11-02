@@ -1,9 +1,9 @@
 package tidb
 
 import (
-	"github.com/vurtneyang/kratos/pkg/log"
-	"github.com/vurtneyang/kratos/pkg/net/netutil/breaker"
-	"github.com/vurtneyang/kratos/pkg/time"
+	"kratos/pkg/log"
+	"kratos/pkg/net/netutil/breaker"
+	"kratos/pkg/time"
 
 	// database driver
 	_ "github.com/go-sql-driver/mysql"

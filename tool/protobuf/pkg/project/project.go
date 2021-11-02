@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/siddontang/go/ioutil2"
 
-	"github.com/vurtneyang/kratos/tool/protobuf/pkg/utils"
+	"kratos/tool/protobuf/pkg/utils"
 )
 
 // if proto file is inside a project (that has a /api directory)

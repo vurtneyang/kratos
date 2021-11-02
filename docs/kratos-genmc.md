@@ -64,5 +64,5 @@ func noneKey() string {
 
 ### 参考
 
-也可以参考完整的testdata例子：github.com/vurtneyang/kratos/tool/kratos-gen-mc/testdata
+也可以参考完整的testdata例子：kratos/tool/kratos-gen-mc/testdata
 

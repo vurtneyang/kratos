@@ -1,6 +1,6 @@
 package sql
 
-import "github.com/vurtneyang/kratos/pkg/stat/metric"
+import "kratos/pkg/stat/metric"
 
 const namespace = "mysql_client"
 

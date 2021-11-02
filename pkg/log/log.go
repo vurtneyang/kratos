@@ -8,8 +8,8 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/vurtneyang/kratos/pkg/conf/env"
-	"github.com/vurtneyang/kratos/pkg/stat/metric"
+	"kratos/pkg/conf/env"
+	"kratos/pkg/stat/metric"
 )
 
 // Config log config.

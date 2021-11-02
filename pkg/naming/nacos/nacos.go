@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/vurtneyang/kratos/pkg/conf/paladin"
-	"github.com/vurtneyang/kratos/pkg/log"
-	bm "github.com/vurtneyang/kratos/pkg/net/http/blademaster"
-	"github.com/vurtneyang/kratos/pkg/net/rpc/warden"
+	"kratos/pkg/conf/paladin"
+	"kratos/pkg/log"
+	bm "kratos/pkg/net/http/blademaster"
+	"kratos/pkg/net/rpc/warden"
 
 	"github.com/nacos-group/nacos-sdk-go/clients"
 	"github.com/nacos-group/nacos-sdk-go/clients/naming_client"

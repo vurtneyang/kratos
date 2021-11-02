@@ -6,7 +6,7 @@ import (
 	"io"
 	"time"
 
-	xtime "github.com/vurtneyang/kratos/pkg/time"
+	xtime "kratos/pkg/time"
 )
 
 var (

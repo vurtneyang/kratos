@@ -9,11 +9,11 @@ import (
 	"sync"
 	"text/template"
 
-	"github.com/vurtneyang/kratos/pkg/net/metadata"
+	"kratos/pkg/net/metadata"
 
-	"github.com/vurtneyang/kratos/pkg/ecode"
-	"github.com/vurtneyang/kratos/pkg/net/http/blademaster/binding"
-	"github.com/vurtneyang/kratos/pkg/net/http/blademaster/render"
+	"kratos/pkg/ecode"
+	"kratos/pkg/net/http/blademaster/binding"
+	"kratos/pkg/net/http/blademaster/render"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/gogo/protobuf/types"

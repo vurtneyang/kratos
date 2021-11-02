@@ -119,9 +119,9 @@ package dao
 import (
 	"context"
 
-	"github.com/vurtneyang/kratos/pkg/naming/discovery"
-	"github.com/vurtneyang/kratos/pkg/net/rpc/warden"
-	"github.com/vurtneyang/kratos/pkg/net/rpc/warden/resolver"
+	"kratos/pkg/naming/discovery"
+	"kratos/pkg/net/rpc/warden"
+	"kratos/pkg/net/rpc/warden/resolver"
 
 	"google.golang.org/grpc"
 )
@@ -206,9 +206,9 @@ package dao
 import (
 	"context"
 
-	"github.com/vurtneyang/kratos/pkg/naming/etcd"
-	"github.com/vurtneyang/kratos/pkg/net/rpc/warden"
-	"github.com/vurtneyang/kratos/pkg/net/rpc/warden/resolver"
+	"kratos/pkg/naming/etcd"
+	"kratos/pkg/net/rpc/warden"
+	"kratos/pkg/net/rpc/warden/resolver"
 
 	"google.golang.org/grpc"
 )
