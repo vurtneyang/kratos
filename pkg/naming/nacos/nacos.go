@@ -26,6 +26,9 @@ const (
 	DefaultClusterName = "DEFAULT"
 	DefaultGroupName   = "DEFAULT_GROUP"
 	DefaultNameSpaceID = "public"
+
+	modeHeartBeat string = "hb"
+	modeSubscribe string = "sb"
 )
 
 type Option interface {
@@ -349,12 +352,18 @@ func newWatcher(ctx context.Context, cli naming_client.INamingClient, serviceNam
 	return w, e
 }
 
-func Target(nacosAddr string, serviceName string, ops ...Option) string {
+func Target(nacosAddr string, cluster, groupName, serviceName string, ops ...Option) string {
+	if groupName == "" {
+		groupName = DefaultGroupName
+	}
+	if cluster == "" {
+		cluster = DefaultClusterName
+	}
 	opts := &options{
-		groupName:   DefaultGroupName,
-		clusters:    "",
+		groupName:   groupName,
+		clusters:    cluster,
 		nameSpaceID: DefaultNameSpaceID,
-		mode:        "hs",
+		mode:        modeHeartBeat,
 		hbInterval:  10 * time.Second,
 	}
 	for _, v := range ops {
@@ -366,6 +375,7 @@ func Target(nacosAddr string, serviceName string, ops ...Option) string {
 	} else if strings.HasPrefix(nacosAddr, "http://") {
 		tmp = "nacos://" + nacosAddr[7:]
 	}
-	return fmt.Sprintf("%s?s=%s&n=%s&cs=%s&g=%s&m=%s&d=%d", tmp, serviceName, opts.nameSpaceID, opts.clusters, opts.groupName, opts.mode, opts.hbInterval/time.Millisecond)
-
+	str := fmt.Sprintf("%s?s=%s&n=%s&cs=%s&g=%s&m=%s&d=%d", tmp, serviceName, opts.nameSpaceID, opts.clusters, opts.groupName, opts.mode, opts.hbInterval/time.Millisecond)
+	//fmt.Println(str)
+	return str
 }
