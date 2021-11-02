@@ -1,0 +1,13 @@
+# idea ignore
+.idea/
+.vscode/
+
+*.swp
+
+# system ignore
+.DS_Store
+
+# project
+*.cert
+*.key
+.test
