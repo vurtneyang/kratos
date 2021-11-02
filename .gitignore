@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-# idea ignore
-.idea/
-=======
-
 # idea ignore
 .idea/
 *.ipr
@@ -10,15 +5,10 @@
 *.iws
 
 biligo/
->>>>>>> master
 .vscode/
 
 *.swp
 
-<<<<<<< HEAD
-# system ignore
-.DS_Store
-=======
 # temp ignore
 *.log
 *.cache
@@ -32,29 +22,8 @@ biligo/
 # system ignore
 .DS_Store
 Thumbs.db
->>>>>>> master
 
 # project
 *.cert
 *.key
 .test
-<<<<<<< HEAD
-=======
-iprepo.txt
-
-app/*/*/cmd/cmd
-app/*/*/*/cmd/cmd
-app/*/*/cmd/debug
-app/*/*/*/cmd/debug
-app/tool/kratos/kratos
-
-bazel-bin
-bazel-genfiles
-bazel-go-common
-bazel-out
-bazel-testlogs
-bazel-test
-_output
-
-vendor/
->>>>>>> master
