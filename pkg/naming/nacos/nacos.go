@@ -24,7 +24,7 @@ import (
 
 const (
 	DefaultClusterName = "DEFAULT"
-	DefaultGroupName   = "newpaqu"
+	DefaultGroupName   = "DEFAULT_GROUP"
 	DefaultNameSpaceID = "public"
 )
 
@@ -58,7 +58,7 @@ type NacosServerConf struct {
 	ProjectId   string `json:"projectId"`
 	ClientKey   string `json:"clientKey"`
 	MasterKey   string `json:"masterKey"`
-	AppCode     string `json:"paqu_new"`
+	AppCode     string `json:"appCode"`
 	ApiServer   string `json:"apiServer"`
 }
 
@@ -95,7 +95,13 @@ type Registry struct {
 	cli  naming_client.INamingClient
 }
 
-func NewRpcxDao(serverName string) (dao *RpcXDao, err error) {
+func NewRpcxDao(cluster,groupName,serverName string) (dao *RpcXDao, err error) {
+	if groupName == "" {
+		groupName = DefaultGroupName
+	}
+	if cluster == "" {
+		cluster = DefaultClusterName
+	}
 	dao = &RpcXDao{}
 	cfg := RpcxConf{}
 	err = paladin.Get("rpcx.toml").UnmarshalTOML(&cfg)
@@ -105,7 +111,7 @@ func NewRpcxDao(serverName string) (dao *RpcXDao, err error) {
 	}
 	dao.Conf = &cfg
 	// New RpcClients
-	dao.Client, err = newClient(dao.Conf, serverName)
+	dao.Client, err = newClient(dao.Conf, cluster,groupName,serverName)
 	if err != nil {
 		log.Error("New Dao newClient err:%v", err)
 		return dao, err
@@ -113,7 +119,13 @@ func NewRpcxDao(serverName string) (dao *RpcXDao, err error) {
 	return dao, err
 }
 
-func newClient(conf *RpcxConf, serverName string) (c client.XClient, err error) {
+func newClient(conf *RpcxConf,cluster,groupName, serverName string) (c client.XClient, err error) {
+	if groupName == "" {
+		groupName = DefaultGroupName
+	}
+	if cluster == "" {
+		cluster = DefaultClusterName
+	}
 	serverConfig := []constant.ServerConfig{{
 		IpAddr: conf.NacosServer.IpAddr,
 		Port:   conf.NacosServer.Port,
@@ -131,12 +143,12 @@ func newClient(conf *RpcxConf, serverName string) (c client.XClient, err error) 
 	}
 
 	// cluster 按照业务方定义的名称
-	cluster := conf.NacosServer.NameSpaceId + "_" + serverName
+	//cluster := conf.NacosServer.NameSpaceId + "_" + serverName
 	log.Info("serverConfig:%v", serverConfig)
 	log.Info("clientConfig:%v", clientConfig)
 	log.Info("cluster:%v", cluster)
 
-	discovery, err := nclient.NewNacosDiscovery(serverName, cluster, DefaultGroupName, clientConfig, serverConfig)
+	discovery, err := nclient.NewNacosDiscovery(serverName, cluster, groupName, clientConfig, serverConfig)
 	if err != nil {
 		log.Debug("Discovery err:%v", err)
 		return nil, err
@@ -148,7 +160,13 @@ func newClient(conf *RpcxConf, serverName string) (c client.XClient, err error) 
 }
 
 // 将服务注册到nacos中
-func RegisterNacos(serverName string) error {
+func RegisterNacos(cluster,groupName,serverName string) error {
+	if groupName == ""{
+		groupName = DefaultGroupName
+	}
+	if cluster == "" {
+		cluster = DefaultClusterName
+	}
 	client, err := NewNameClient()
 	// Register Instance
 	ip, _ := externalIP()
@@ -161,15 +179,21 @@ func RegisterNacos(serverName string) error {
 		Healthy:     true,
 		Ephemeral:   true,
 		Metadata:    map[string]string{"gRPC": fmt.Sprintf("%d", getGrpcPort()), "HTTP": fmt.Sprintf("%d", getHttpPort())},
-		ClusterName: "DEFAULT", // default value is DEFAULT
-		GroupName:   "newpaqu", // default value is DEFAULT_GROUP
+		ClusterName: cluster, // default value is DEFAULT
+		GroupName:   groupName, // default value is DEFAULT_GROUP
 	}
 	_, err = client.RegisterInstance(registerInfo)
 	return err
 }
 
 // 将服务从nacos中注销
-func DeregisterNacos(serverName string) error {
+func DeregisterNacos(cluster,groupName,serverName string) error {
+	if groupName == ""{
+		groupName = DefaultGroupName
+	}
+	if cluster == "" {
+		cluster = DefaultClusterName
+	}
 	client, err := NewNameClient()
 	// unRegister Instance
 	ip, _ := externalIP()
@@ -178,8 +202,8 @@ func DeregisterNacos(serverName string) error {
 		Port:        getGrpcPort(),
 		ServiceName: serverName,
 		Ephemeral:   true,
-		Cluster:     "newpaqu", // default value is DEFAULT
-		GroupName:   "newpaqu", // default value is DEFAULT_GROUP
+		Cluster:     cluster, // default value is DEFAULT
+		GroupName:   groupName, // default value is DEFAULT_GROUP
 	}
 	_, err = client.DeregisterInstance(unRegisterInfo)
 
@@ -326,15 +350,6 @@ func newWatcher(ctx context.Context, cli naming_client.INamingClient, serviceNam
 }
 
 func Target(nacosAddr string, serviceName string, ops ...Option) string {
-	/*conf := RpcxConf{}
-	paladin.Get("rpcx.toml").UnmarshalTOML(&conf)
-	// Addr nacos://
-	addr := fmt.Sprintf("nacos://nacos:nacos@%s:%d/nacos", conf.NacosServer.IpAddr, conf.NacosServer.Port)
-	nameSpaceId := conf.NacosServer.NameSpaceId
-	groupName := "newpaqu"
-
-	return fmt.Sprintf("%s?s=%s&n=%s&cs=%s&g=%s&m=%s&d=%d", addr, serviceName, nameSpaceId, cluster, groupName, "sb", 5000)*/
-
 	opts := &options{
 		groupName:   DefaultGroupName,
 		clusters:    "",
