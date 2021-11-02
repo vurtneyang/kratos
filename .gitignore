@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+# idea ignore
+.idea/
+=======
 
 # idea ignore
 .idea/
@@ -6,10 +10,15 @@
 *.iws
 
 biligo/
+>>>>>>> master
 .vscode/
 
 *.swp
 
+<<<<<<< HEAD
+# system ignore
+.DS_Store
+=======
 # temp ignore
 *.log
 *.cache
@@ -23,11 +32,14 @@ biligo/
 # system ignore
 .DS_Store
 Thumbs.db
+>>>>>>> master
 
 # project
 *.cert
 *.key
 .test
+<<<<<<< HEAD
+=======
 iprepo.txt
 
 app/*/*/cmd/cmd
@@ -45,3 +57,4 @@ bazel-test
 _output
 
 vendor/
+>>>>>>> master

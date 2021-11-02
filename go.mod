@@ -1,6 +1,6 @@
 module kratos
 
-go 1.13
+go 1.15
 
 require (
 	github.com/BurntSushi/toml v0.3.1
@@ -48,4 +48,5 @@ require (
 	google.golang.org/genproto v0.0.0-20210921142501-181ce0d877f6
 	google.golang.org/grpc v1.40.0
 	gopkg.in/yaml.v2 v2.4.0
+
 )
