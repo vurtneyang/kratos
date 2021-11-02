@@ -43,7 +43,7 @@ var toolIndexs = []*Tool{
 	{
 		Name:         "genproject",
 		Alias:        "kratos-gen-project",
-		Install:      "go get -u github.com/vurtneyang/kratos/tool/kratos-gen-project@v1.1.10",
+		Install:      "go get -u github.com/vurtneyang/kratos/tool/kratos-gen-project@v1.1.13",
 		BuildTime:    time.Date(2020, 3, 31, 0, 0, 0, 0, time.Local),
 		Platform:     []string{"darwin", "linux", "windows"},
 		Hidden:       true,
