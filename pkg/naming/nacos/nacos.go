@@ -349,10 +349,17 @@ func newWatcher(ctx context.Context, cli naming_client.INamingClient, serviceNam
 	return w, e
 }
 
-func Target(nacosAddr string, serviceName string, ops ...Option) string {
+func Target(nacosAddr string,cluster,groupName, serviceName string, ops ...Option) string {
+	if groupName == ""{
+		groupName = DefaultGroupName
+	}
+	if cluster == "" {
+		cluster = DefaultClusterName
+	}
+
 	opts := &options{
-		groupName:   DefaultGroupName,
-		clusters:    "",
+		groupName:   groupName,
+		clusters:    cluster,
 		nameSpaceID: DefaultNameSpaceID,
 		mode:        "hs",
 		hbInterval:  10 * time.Second,
