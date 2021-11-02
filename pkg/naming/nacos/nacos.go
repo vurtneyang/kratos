@@ -361,7 +361,7 @@ func Target(nacosAddr string,cluster,groupName, serviceName string, ops ...Optio
 		groupName:   groupName,
 		clusters:    cluster,
 		nameSpaceID: DefaultNameSpaceID,
-		mode:        "hs",
+		mode:        "hb",	// heartbeat
 		hbInterval:  10 * time.Second,
 	}
 	for _, v := range ops {
