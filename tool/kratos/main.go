@@ -16,7 +16,7 @@ func main() {
 		{
 			Name:            "new",
 			Aliases:         []string{"n"},
-			Usage:           "创建新项目",
+			Usage:           "创建新项目1102",
 			Action:          runNew,
 			SkipFlagParsing: true,
 		},
