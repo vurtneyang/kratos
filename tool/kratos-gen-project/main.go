@@ -33,7 +33,7 @@ COPYRIGHT:
 func main() {
 	app := cli.NewApp()
 	app.Name = ""
-	app.Usage = "kratos 新项目创建工具 1102"
+	app.Usage = "kratos 新项目创建工具"
 	app.UsageText = "项目名 [options]"
 	app.HideVersion = true
 	app.CustomAppHelpTemplate = appHelpTemplate
