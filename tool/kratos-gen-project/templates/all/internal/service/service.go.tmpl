@@ -13,7 +13,10 @@ import (
 )
 
 var Provider = wire.NewSet(New, wire.Bind(new(pb.DemoServer), new(*Service)))
+/************** Add Service ********************/
 
+
+/************** END Add Service ****************/
 // Service service.
 type Service struct {
 	ac  *paladin.Map
@@ -28,6 +31,10 @@ func New(d dao.Dao) (s *Service, cf func(), err error) {
 	}
 	cf = s.Close
 	err = paladin.Watch("application.toml", s.ac)
+	/******************** New Service ************/
+
+
+	/**************** End New Service ************/
 	return
 }
 

@@ -10,7 +10,7 @@ import (
 )
 
 // AppID .
-const AppID = "TODO: ADD APP ID"
+const AppID = "{{.Name}}"
 
 type Client struct {
 	MonitorClient MonitorClient
@@ -35,8 +35,7 @@ func NewClient() (*Client, error) {
 		log.Error("[grpc.client] {{.Name}} grpc new client,err:%v", err)
 	}
 	cli.MonitorClient = NewMonitorClient(conn)
-
-	cli.QianDaoClient = v1pb.NewQiandaoClient(conn)
+    /************ Add Client ***************/
 
 	return cli, err
 }
