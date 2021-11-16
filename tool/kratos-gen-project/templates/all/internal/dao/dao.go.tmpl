@@ -16,7 +16,6 @@ import (
 
 var Provider = wire.NewSet(New, NewDB, NewRedis, NewMC)
 
-//go:generate kratos tool genbts
 // Dao dao interface
 type Dao interface {
 	Close()

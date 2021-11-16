@@ -12,7 +12,7 @@ import (
 	"github.com/google/wire"
 )
 
-//go:generate kratos t wire
+//go:generate kratos tool wire
 func InitApp() (*App, func(), error) {
 	panic(wire.Build(dao.Provider, service.Provider, http.New, grpc.New, NewApp))
 }

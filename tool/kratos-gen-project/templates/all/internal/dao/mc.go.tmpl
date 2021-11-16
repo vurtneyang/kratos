@@ -9,7 +9,6 @@ import (
 	"kratos/pkg/log"
 )
 
-//go:generate kratos tool genmc
 type _mc interface {
 	DeleteArticleCache(c context.Context, id int64) (err error)
 }
