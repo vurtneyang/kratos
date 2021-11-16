@@ -8,7 +8,7 @@ import (
 )
 
 // New new a grpc server.
-func New(svc pb.DemoServer) (ws *warden.Server, err error) {
+func New(svc pb.MonitorServer) (ws *warden.Server, err error) {
 	var (
 		cfg warden.ServerConfig
 		ct paladin.TOML

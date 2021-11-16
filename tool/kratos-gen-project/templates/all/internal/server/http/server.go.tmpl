@@ -10,10 +10,10 @@ import (
 	bm "kratos/pkg/net/http/blademaster"
 )
 
-var svc pb.DemoServer
+var svc pb.MonitorServer
 
 // New new a bm server.
-func New(s pb.DemoServer) (engine *bm.Engine, err error) {
+func New(s pb.MonitorServer) (engine *bm.Engine, err error) {
 	var (
 		cfg bm.ServerConfig
 		ct paladin.TOML
@@ -55,7 +55,11 @@ func ping(ctx *bm.Context) {
 
 // example for http request handler.
 func howToStart(c *bm.Context) {
-	k := &model.Kratos{
+    // Kratos hello kratos.
+    type Kratos struct {
+    	Hello string
+    }
+	k := &Kratos{
 		Hello: "Golang 大法好 !!!",
 	}
 	c.JSON(k, nil)
