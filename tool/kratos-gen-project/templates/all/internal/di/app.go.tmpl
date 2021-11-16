@@ -9,6 +9,7 @@ import (
 	"kratos/pkg/log"
 	bm "kratos/pkg/net/http/blademaster"
 	"kratos/pkg/net/rpc/warden"
+	"kratos/pkg/naming/nacos"
 )
 
 //go:generate kratos tool wire
@@ -24,6 +25,7 @@ func NewApp(svc *service.Service, h *bm.Engine, g *warden.Server) (app *App, clo
 		http: h,
 		grpc: g,
 	}
+    nacos.RegisterNacos("", "DEFAULT_GROUP", "{{.Name}}")
 	closeFunc = func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 35*time.Second)
 		if err := g.Shutdown(ctx); err != nil {

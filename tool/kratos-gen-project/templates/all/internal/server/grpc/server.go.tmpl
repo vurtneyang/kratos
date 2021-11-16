@@ -20,7 +20,12 @@ func New(svc pb.DemoServer) (ws *warden.Server, err error) {
 		return
 	}
 	ws = warden.NewServer(&cfg)
-	pb.RegisterDemoServer(ws.Server(), svc)
+	pb.RegisterMonitorServer(ws.Server(), svc)
+	/************ Register GRPC service  **************/
+
+
+
+	/************ End Register GRPC Service *********/
 	ws, err = ws.Start()
 	return
 }

@@ -26,7 +26,13 @@ func New(s pb.DemoServer) (engine *bm.Engine, err error) {
 	}
 	svc = s
 	engine = bm.DefaultServer(&cfg)
-	pb.RegisterDemoBMServer(engine, s)
+	pb.RegisterMonitorBMServer(engine, s)
+	/************ Register BM Service ******************/
+
+
+
+
+	/************ End Register BM Service *************/
 	initRouter(engine)
 	err = engine.Start()
 	return

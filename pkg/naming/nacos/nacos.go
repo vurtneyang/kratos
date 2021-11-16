@@ -107,7 +107,7 @@ func NewRpcxDao(cluster,groupName,serverName string) (dao *RpcXDao, err error) {
 	}
 	dao = &RpcXDao{}
 	cfg := RpcxConf{}
-	err = paladin.Get("rpcx.toml").UnmarshalTOML(&cfg)
+	err = paladin.Get("nacos.toml").UnmarshalTOML(&cfg)
 	if err != nil {
 		log.Error("[Dao.New] UnmarshalToml err:%v", err)
 		return dao, err
@@ -296,7 +296,7 @@ func getHttpPort() (port uint64) {
 
 func NewNameClient() (c naming_client.INamingClient, err error) {
 	conf := RpcxConf{}
-	err = paladin.Get("rpcx.toml").UnmarshalTOML(&conf)
+	err = paladin.Get("nacos.toml").UnmarshalTOML(&conf)
 	if err != nil {
 		log.Error("[Dao.New] UnmarshalToml err:%v", err)
 		return c, err

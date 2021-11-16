@@ -1,16 +1,15 @@
 package dao
 
 import (
-	"context"
-
-	"{{.ModPrefix}}{{.Name}}/internal/model"
 	"kratos/pkg/conf/paladin"
-	"kratos/pkg/database/sql"
+	"kratos/pkg/database/orm"
+
+	"github.com/jinzhu/gorm"
 )
 
-func NewDB() (db *sql.DB, cf func(), err error) {
+func NewDB() (db *gorm.DB, cf func(), err error) {
 	var (
-		cfg sql.Config
+		cfg orm.Config
 		ct paladin.TOML
 	)
 	if err = paladin.Get("db.toml").Unmarshal(&ct); err != nil {
@@ -19,12 +18,7 @@ func NewDB() (db *sql.DB, cf func(), err error) {
 	if err = ct.Get("Client").UnmarshalTOML(&cfg); err != nil {
 		return
 	}
-	db = sql.NewMySQL(&cfg)
+	db = orm.NewMySQL(&cfg)
 	cf = func() {db.Close()}
-	return
-}
-
-func (d *dao) RawArticle(ctx context.Context, id int64) (art *model.Article, err error) {
-	// get data from db
 	return
 }

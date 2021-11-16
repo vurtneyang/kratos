@@ -21,6 +21,7 @@ require (
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.5.2
 	github.com/jinzhu/gorm v1.9.16
+	github.com/magicdvd/nacos-client v0.0.0-20210609122731-160b0bb76754
 	github.com/montanaflynn/stats v0.5.0
 	github.com/nacos-group/nacos-sdk-go v1.0.9
 	github.com/opentracing/opentracing-go v1.1.1-0.20190913142402-a7454ce5950e
