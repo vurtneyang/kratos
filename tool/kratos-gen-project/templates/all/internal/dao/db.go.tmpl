@@ -23,8 +23,3 @@ func NewDB() (db *sql.DB, cf func(), err error) {
 	cf = func() {db.Close()}
 	return
 }
-
-func (d *dao) RawArticle(ctx context.Context, id int64) (art *model.Article, err error) {
-	// get data from db
-	return
-}

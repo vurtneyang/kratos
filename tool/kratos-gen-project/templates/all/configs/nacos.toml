@@ -1,0 +1,23 @@
+[Server]
+addr = "0.0.0.0:9000"
+timeout = "1s"
+
+[NacosServer]
+ipAddr = "xxxxxxx.aliyuncs.com"
+port = 8848
+namespaceId = "xxxxxxxxx"
+projectId = "xxxxx"
+clientKey = "xxxxxxxx"
+masterKey = "xxxxxxxx"
+appCode = "xxxxxxxx"
+apiServer = "https://xxxxxxxx"
+
+[NacosClient]
+timeOutMs = 10000           # 10s 异常会摘除节点
+beatInterval = 5000         # 心跳间隔
+namespaceId = "public"
+cacheDir = "/var/log/nacos/cache"   # 本地mac运行建议是var目录，线上改成/data目录
+logDir = "/var/log/nacos/log"
+updateThreadNum = 20
+notLoadCacheAtStart = true
+updateCacheWhenEmpty = true

@@ -14,10 +14,17 @@ import (
 
 func main() {
 	flag.Parse()
-	log.Init(nil) // debug flag: log.dir={path}
+	paladin.Init()
+	slsConf := log.NewSLSCfg()
+    sls, err := log.NewAliSLS(slsConf)
+    if err != nil {
+    	panic(err)
+    }
+    logConf := &log.Config{Stdout: false}
+    log.Init(logConf, sls) // debug flag: log.dir={path}
 	defer log.Close()
 	log.Info("{{.Name}} start")
-	paladin.Init()
+
 	_, closeFunc, err := di.InitApp()
 	if err != nil {
 		panic(err)

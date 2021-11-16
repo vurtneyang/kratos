@@ -4,22 +4,41 @@ import (
 	"fmt"
 
 	"kratos/pkg/net/rpc/warden"
-
+    "kratos/pkg/naming/nacosgrpc"
+    "kratos/pkg/naming/nacosgrpc/balancer/weightedroundrobin"
 	"google.golang.org/grpc"
 )
 
 // AppID .
 const AppID = "TODO: ADD APP ID"
 
-// NewClient new grpc client
-func NewClient(cfg *warden.ClientConfig, opts ...grpc.DialOption) (DemoClient, error) {
-	client := warden.NewClient(cfg, opts...)
-	cc, err := client.Dial(context.Background(), fmt.Sprintf("discovery://default/%s", AppID))
-	if err != nil {
-		return nil, err
-	}
-	return NewDemoClient(cc), nil
+type Client struct {
+	MonitorClient MonitorClient
+	/*********  Add Grpc Client *************/
+
 }
 
+// NewClient new grpc client
+func NewClient() (*Client, error) {
+	cli := &Client{}
+	cfg := nacos.RpcxConf{}
+	err := paladin.Get("rpcx.toml").UnmarshalTOML(&cfg)
+	if err != nil {
+		log.Error("[Dao.New] UnmarshalToml err:%v", err)
+		return cli, err
+	}
+
+	conn, err := grpc.Dial(nacosgrpc.Target(fmt.Sprintf("http://nacos:nacos@%s:8848/nacos", cfg.NacosServer.IpAddr), "", "DEFAULT_GROUP", "{{.Name}}"),
+	    grpc.WithInsecure(),
+	    grpc.WithDefaultServiceConfig(fmt.Sprintf(`{"LoadBalancingPolicy": "%s"}`, weightedroundrobin.Name)))
+	if err != nil {
+		log.Error("[grpc.client] {{.Name}} grpc new client,err:%v", err)
+	}
+	cli.MonitorClient = NewMonitorClient(conn)
+
+	cli.QianDaoClient = v1pb.NewQiandaoClient(conn)
+
+	return cli, err
+}
 // 生成 gRPC 代码
 //go:generate kratos tool protoc --grpc --bm api.proto

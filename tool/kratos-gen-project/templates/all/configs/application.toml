@@ -1,3 +1,12 @@
-
 # This is a TOML document. Boom~
 demoExpire = "24h"
+
+[LogaliSLS]
+Safe = true
+TimeoutMs = 0           #超时毫秒数
+RecordLevel = 0         #日志级别 0：全部日志 1：
+Endpoint = "xxxxxxxxx.aliyuncs.com"
+AccessKeyID = "xxxxxxxxxxxL55NW8aK"
+AccessKeySecret = "xxxxxxxxxxxxTGGhJWCHyLLoq"
+ProjectName = "beta-newpaqu"
+LogtorName = "xxxxxxx"
