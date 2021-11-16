@@ -9,7 +9,9 @@ import (
 
 	"{{.ModPrefix}}{{.Name}}/internal/di"
 	"kratos/pkg/conf/paladin"
+	"kratos/pkg/net/trace"
 	"kratos/pkg/log"
+
 )
 
 func main() {
@@ -25,6 +27,8 @@ func main() {
 	defer log.Close()
 	log.Info("{{.Name}} start")
 
+    trace.Init(nil)
+    defer trace.Close()
 	_, closeFunc, err := di.InitApp()
 	if err != nil {
 		panic(err)
