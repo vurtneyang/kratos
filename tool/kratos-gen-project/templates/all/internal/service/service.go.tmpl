@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	pb "{{.ModPrefix}}{{.Name}}/api"
 	"{{.ModPrefix}}{{.Name}}/internal/dao"
@@ -12,7 +11,7 @@ import (
 	"github.com/google/wire"
 )
 
-var Provider = wire.NewSet(New, wire.Bind(new(pb.DemoServer), new(*Service)))
+var Provider = wire.NewSet(New, wire.Bind(new(pb.MonitorServer), new(*Service)))
 /************** Add Service ********************/
 
 
