@@ -8,7 +8,7 @@ import (
 
 const (
 	DefaultClusterName = "DEFAULT"
-	DefaultGroupName   = "newpaqu"
+	DefaultGroupName   = "DEFAULT_GROUP"
 	DefaultNameSpaceID = "public"
 )
 

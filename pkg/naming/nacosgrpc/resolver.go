@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"go-paqu/pkg/library/nacosgrpc/balancer/weightedroundrobin"
+	"kratos/pkg/naming/nacosgrpc/balancer/weightedroundrobin"
 
 	"github.com/magicdvd/nacos-client"
 	"google.golang.org/grpc/resolver"
