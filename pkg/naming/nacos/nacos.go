@@ -171,6 +171,9 @@ func RegisterNacos(cluster,groupName,serverName string) error {
 		cluster = DefaultClusterName
 	}
 	client, err := NewNameClient()
+	if err != nil {
+		fmt.Println("New NameClient err:(%v)",err)
+	}
 	// Register Instance
 	ip, _ := externalIP()
 	registerInfo := vo.RegisterInstanceParam{
@@ -198,6 +201,9 @@ func DeregisterNacos(cluster,groupName,serverName string) error {
 		cluster = DefaultClusterName
 	}
 	client, err := NewNameClient()
+	if err != nil {
+		fmt.Println("New NameClient err:(%v)",err)
+	}
 	// unRegister Instance
 	ip, _ := externalIP()
 	unRegisterInfo := vo.DeregisterInstanceParam{
