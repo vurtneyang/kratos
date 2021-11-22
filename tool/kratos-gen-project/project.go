@@ -61,6 +61,12 @@ func create() (err error) {
 	if err = download(); err != nil {
 		return
 	}
+	if err = generate("api/client.go"); err != nil {
+		return
+	}
+	if err = download(); err != nil {
+		return
+	}
 	if err = generate("./..."); err != nil {
 		return
 	}
