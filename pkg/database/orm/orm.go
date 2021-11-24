@@ -32,7 +32,6 @@ func init() {
 }
 
 // NewMySQL new db and retry connection when has error.
-// Deprecated: use bcurd instead.
 func NewMySQL(c *Config) (db *gorm.DB) {
 	db, err := gorm.Open("mysql", c.DSN)
 	if err != nil {
