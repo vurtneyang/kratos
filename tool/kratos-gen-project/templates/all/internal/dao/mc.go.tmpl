@@ -29,7 +29,7 @@ func NewMC() (mc *memcache.Memcache, cf func(), err error) {
 	return
 }
 
-func (d *dao) PingMC(ctx context.Context) (err error) {
+func (d *Dao) PingMC(ctx context.Context) (err error) {
 	if err = d.mc.Set(ctx, &memcache.Item{Key: "ping", Value: []byte("pong"), Expiration: 0}); err != nil {
 		log.Error("conn.Set(PING) error(%v)", err)
 	}
