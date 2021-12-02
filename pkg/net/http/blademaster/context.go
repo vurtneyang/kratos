@@ -47,7 +47,8 @@ type Context struct {
 	// This mutex protect Keys map
 	keysMutex sync.RWMutex
 
-	Error error
+	Error    error
+	ErrorMsg string
 
 	method string
 	engine *Engine
@@ -66,6 +67,7 @@ func (c *Context) reset() {
 	c.handlers = nil
 	c.Keys = nil
 	c.Error = nil
+	c.ErrorMsg = ""
 	c.method = ""
 	c.RoutePath = ""
 	c.Params = c.Params[0:0]
@@ -373,6 +375,7 @@ func (c *Context) Bind(obj interface{}) error {
 func (c *Context) mustBindWith(obj interface{}, b binding.Binding) (err error) {
 	if err = b.Bind(c.Request, obj); err != nil {
 		c.Error = ecode.RequestErr
+		c.ErrorMsg = err.Error()
 		c.Render(http.StatusOK, render.JSON{
 			Code:    ecode.RequestErr.Code(),
 			Message: err.Error(),

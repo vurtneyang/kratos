@@ -43,6 +43,9 @@ func Logger() HandlerFunc {
 		isSlow := dt >= (time.Millisecond * 500)
 		if err != nil {
 			errmsg = err.Error()
+			if ecode.Equal(cerr, ecode.RequestErr) {
+				errmsg = c.ErrorMsg
+			}
 			lf = log.Errorv
 			if cerr.Code() > 0 {
 				lf = log.Warnv
