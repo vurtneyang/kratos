@@ -20,8 +20,9 @@ func init() {
 	}
 
 	if v := os.Getenv("APP_NAME"); v != "" {
-		dEnv := os.Getenv("DEPLOY_ENV")
-		_jaegerAppID = fmt.Sprintf("%s-%s", v, dEnv)
+		group := os.Getenv("APP_GROUP")
+		de := os.Getenv("DEPLOY_ENV")
+		_jaegerAppID = fmt.Sprintf("%s-%s-%s", group, v, de)
 	}
 
 	flag.StringVar(&_jaegerEndpoint, "jaeger_endpoint", _jaegerEndpoint, "jaeger report endpoint, or use JAEGER_ENDPOINT env.")
