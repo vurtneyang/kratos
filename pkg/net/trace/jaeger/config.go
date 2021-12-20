@@ -2,6 +2,7 @@ package jaeger
 
 import (
 	"flag"
+	"fmt"
 	"os"
 
 	"kratos/pkg/conf/env"
@@ -18,8 +19,10 @@ func init() {
 		_jaegerEndpoint = v
 	}
 
-	if v := os.Getenv("JAEGER_APPID"); v != "" {
-		_jaegerAppID = v
+	if v := os.Getenv("APP_NAME"); v != "" {
+		group := os.Getenv("APP_GROUP")
+		de := os.Getenv("DEPLOY_ENV")
+		_jaegerAppID = fmt.Sprintf("%s-%s-%s", group, v, de)
 	}
 
 	flag.StringVar(&_jaegerEndpoint, "jaeger_endpoint", _jaegerEndpoint, "jaeger report endpoint, or use JAEGER_ENDPOINT env.")
