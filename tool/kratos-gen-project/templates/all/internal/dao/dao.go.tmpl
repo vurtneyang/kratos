@@ -6,6 +6,7 @@ import (
 
 	"kratos/pkg/cache/memcache"
 	"kratos/pkg/cache/redis"
+	"kratos/pkg/cache/xredis"
 	"kratos/pkg/conf/paladin"
 	"kratos/pkg/sync/pipeline/fanout"
 	xtime "kratos/pkg/time"
@@ -16,50 +17,58 @@ import (
 
 var Provider = wire.NewSet(New, NewDB, NewRedis, NewMC)
 
-// Dao dao interface
-type Dao interface {
-	Close()
-	Ping(ctx context.Context) (err error)
-}
-
 // dao dao.
-type dao struct {
+type Dao struct {
 	db          *gorm.DB
 	redis       *redis.Redis
+	XRedis     *xredis.Client
 	mc          *memcache.Memcache
 	cache *fanout.Fanout
 	demoExpire int32
 }
 
 // New new a dao and return.
-func New(r *redis.Redis, mc *memcache.Memcache, db *gorm.DB) (d Dao, cf func(), err error) {
+func New(r *redis.Redis, mc *memcache.Memcache, db *gorm.DB) (d *Dao, cf func(), err error) {
 	return newDao(r, mc, db)
 }
 
-func newDao(r *redis.Redis, mc *memcache.Memcache, db *gorm.DB) (d *dao, cf func(), err error) {
+func newDao(r *redis.Redis, mc *memcache.Memcache, db *gorm.DB) (d *Dao, cf func(), err error) {
 	var cfg struct{
 		DemoExpire xtime.Duration
 	}
 	if err = paladin.Get("application.toml").UnmarshalTOML(&cfg); err != nil {
 		return
 	}
-	d = &dao{
+	d = &Dao{
 		db: db,
 		redis: r,
 		mc: mc,
 		cache: fanout.New("cache"),
 		demoExpire: int32(time.Duration(cfg.DemoExpire) / time.Second),
 	}
+	var (
+		rCfg redis.Config
+		ct   paladin.Map
+	)
+	if err = paladin.Get("redis.toml").Unmarshal(&ct); err != nil {
+		return
+	}
+	if err = ct.Get("Client").UnmarshalTOML(&rCfg); err != nil {
+		return
+	}
+
+	d.XRedis = xredis.New(&rCfg)
+
 	cf = d.Close
 	return
 }
 
 // Close close the resource.
-func (d *dao) Close() {
+func (d *Dao) Close() {
 	d.cache.Close()
 }
 
 // Ping ping the resource.
-func (d *dao) Ping(ctx context.Context) (err error) {
+func (d *Dao) Ping(ctx context.Context) (err error) {
 	return nil
 }

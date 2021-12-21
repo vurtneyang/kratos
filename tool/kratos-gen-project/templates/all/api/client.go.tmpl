@@ -24,7 +24,7 @@ type Client struct {
 func NewClient() (*Client, error) {
 	cli := &Client{}
 	cfg := nacos.RpcxConf{}
-	err := paladin.Get("rpcx.toml").UnmarshalTOML(&cfg)
+	err := paladin.Get("nacos.toml").UnmarshalTOML(&cfg)
 	if err != nil {
 		log.Error("[Dao.New] UnmarshalToml err:%v", err)
 		return cli, err

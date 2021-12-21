@@ -40,8 +40,10 @@ func (r *JaegerReporter) WriteSpan(raw *trace.Span) (err error) {
 		span.SetTag(t.Key, t.Value)
 	}
 
-	r.transport.Append(span)
-	return nil
+	cnt, err := r.transport.Append(span)
+	log.Info("[info] write append cnt:%d, err:%v", cnt, err)
+
+	return err
 }
 
 func (rpt *JaegerReporter) Close() error {
