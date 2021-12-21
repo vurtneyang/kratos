@@ -119,6 +119,9 @@ func ParseBMMethod(method *descriptor.MethodDescriptorProto) (*googleMethodOptio
 	var httpMethod string
 	var pathPattern string
 	switch pattern := rule.Pattern.(type) {
+	case *annotations.HttpRule_Custom:
+		pathPattern = pattern.Custom.Path
+		httpMethod = pattern.Custom.Kind
 	case *annotations.HttpRule_Get:
 		pathPattern = pattern.Get
 		httpMethod = http.MethodGet
