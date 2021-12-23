@@ -9,10 +9,6 @@ import (
 	"kratos/pkg/log"
 )
 
-type _mc interface {
-	DeleteArticleCache(c context.Context, id int64) (err error)
-}
-
 func NewMC() (mc *memcache.Memcache, cf func(), err error) {
 	var (
 		cfg memcache.Config
@@ -34,8 +30,4 @@ func (d *Dao) PingMC(ctx context.Context) (err error) {
 		log.Error("conn.Set(PING) error(%v)", err)
 	}
 	return
-}
-
-func keyArt(id int64) string {
-	return fmt.Sprintf("art_%d", id)
 }

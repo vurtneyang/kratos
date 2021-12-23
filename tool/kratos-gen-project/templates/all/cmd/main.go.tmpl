@@ -16,7 +16,11 @@ import (
 
 func main() {
 	flag.Parse()
-	paladin.Init()
+	err := paladin.Init()
+	if err != nil {
+    	log.Error("paladin.Init error error(%v)", err)
+    	panic("paladin.Init error")
+    }
 	slsConf := log.NewSLSCfg()
     sls, err := log.NewAliSLS(slsConf)
     if err != nil {
