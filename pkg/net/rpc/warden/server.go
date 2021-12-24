@@ -172,7 +172,7 @@ func NewServer(conf *ServerConfig, opt ...grpc.ServerOption) (s *Server) {
 		}
 		conf = parseDSN(_grpcDSN)
 	} else {
-		fmt.Fprintf(os.Stderr, "[warden] config is Deprecated, argument will be ignored. please use -grpc flag or GRPC env to configure warden server.\n")
+		//fmt.Fprintf(os.Stderr, "[warden] config is Deprecated, argument will be ignored. please use -grpc flag or GRPC env to configure warden server.\n")
 	}
 	s = new(Server)
 	if err := s.SetConfig(conf); err != nil {
