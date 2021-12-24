@@ -14,7 +14,7 @@ import (
 )
 
 // AppID .
-const AppID = "test-interface"
+const AppID = "{{.ModPrefix}}{{.Name}}"
 
 type Client struct {
 	MonitorClient MonitorClient
