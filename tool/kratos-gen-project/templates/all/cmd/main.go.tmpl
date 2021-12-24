@@ -2,16 +2,15 @@ package main
 
 import (
 	"flag"
+	"kratos/pkg/net/trace/jaeger"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	"{{.ModPrefix}}{{.Name}}/internal/di"
 	"kratos/pkg/conf/paladin"
-	"kratos/pkg/net/trace"
 	"kratos/pkg/log"
-
+	"{{.ModPrefix}}{{.Name}}/internal/di"
 )
 
 func main() {
@@ -25,10 +24,9 @@ func main() {
     logConf := &log.Config{Stdout: false}
     log.Init(logConf, sls) // debug flag: log.dir={path}
 	defer log.Close()
+	jaeger.Init()
 	log.Info("{{.Name}} start")
 
-    trace.Init(nil)
-    defer trace.Close()
 	_, closeFunc, err := di.InitApp()
 	if err != nil {
 		panic(err)
