@@ -160,7 +160,7 @@ func (f *file) daemon() {
 		log.Printf("create fsnotify for base path %s fail %s, reload function will lose efficacy", f.base, err)
 		return
 	}
-	log.Printf("start watch filepath: %s", f.base)
+	//log.Printf("start watch filepath: %s", f.base)
 	for event := range fswatcher.Events {
 		switch event.Op {
 		// use vim edit config will trigger rename
