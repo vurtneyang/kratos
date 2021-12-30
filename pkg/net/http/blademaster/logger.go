@@ -68,6 +68,8 @@ func Logger() HandlerFunc {
 			log.KVFloat64("timeout_quota", quota),
 			log.KVFloat64("ts", dt.Seconds()),
 			log.KVString("source", "http-access-log"),
+			log.KVString("authorization", req.Header.Get("Authorization")),
+			log.KVString("sign", req.Header.Get("X-Sign")),
 		)
 	}
 }
