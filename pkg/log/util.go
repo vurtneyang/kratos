@@ -30,7 +30,7 @@ func addExtraField(ctx context.Context, fields map[string]interface{}) {
 		fields[_cluster] = cluster
 	}
 	if mid:=metadata.String(ctx,metadata.Mid);mid != "" {
-		fields[_user] = mid
+		fields[_uid] = mid
 	}
 	
 	fields[_deplyEnv] = env.DeployEnv
