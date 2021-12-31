@@ -44,6 +44,8 @@ const (
 	_envColor = "env_color"
 	// cluster.
 	_cluster = "cluster"
+	// uid
+	_uid = "uid"
 )
 
 // Handler is used to handle log events, outputting them to
