@@ -1,6 +1,7 @@
 package orm
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"time"
@@ -33,10 +34,10 @@ func (l ormLog) Print(v ...interface{}) {
 }
 
 func (l ormLog) Printf(format string, v ...interface{}) {
-	fmt.Println("format", format)
-	for _, l := range v {
-		fmt.Println("l", l)
-	}
+	log.Warnv(context.Background(),
+		log.KVString("log", fmt.Sprintf(format, v...)),
+		log.KVString("source", "mysql-log"),
+	)
 }
 
 func init() {
@@ -63,10 +64,8 @@ func NewMySQL(c *Config) (db *gorm.DB) {
 func NewMySqlV2(c *Config) (db *gormV2.DB) {
 	db, err := gormV2.Open(mysqlV2.Open(c.DSN), &gormV2.Config{
 		Logger: gormLogger.New(ormLog{}, gormLogger.Config{
-			SlowThreshold:             200 * time.Millisecond,
-			LogLevel:                  gormLogger.Warn,
-			IgnoreRecordNotFoundError: false,
-			Colorful:                  true,
+			SlowThreshold: 200 * time.Millisecond,
+			LogLevel:      gormLogger.Warn,
 		}),
 	})
 
