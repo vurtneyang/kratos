@@ -31,6 +31,7 @@ require (
 	github.com/philchia/agollo/v4 v4.1.1
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.11.0
+	github.com/prometheus/common v0.32.1 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
 	github.com/rpcxio/rpcx-nacos v0.0.0-20211011122857-65b100bc7413
 	github.com/shirou/gopsutil v2.19.11+incompatible
@@ -46,11 +47,12 @@ require (
 	go.etcd.io/etcd/client/v3 v3.5.0
 	go.uber.org/atomic v1.7.0
 	golang.org/x/net v0.0.0-20210917221730-978cfadd31cf
+	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
 	golang.org/x/tools v0.1.6
 	google.golang.org/genproto v0.0.0-20210921142501-181ce0d877f6
 	google.golang.org/grpc v1.40.0
 	gopkg.in/yaml.v2 v2.4.0
-	gorm.io/driver/mysql v1.2.2 // indirect
-	gorm.io/gorm v1.22.4 // indirect
+	gorm.io/driver/mysql v1.2.2
+	gorm.io/gorm v1.22.4
 
 )
