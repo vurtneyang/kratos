@@ -76,7 +76,7 @@ func NewMySqlV2(c *Config) (db *gormV2.DB) {
 
 	sqlDB, err := db.DB()
 	if err != nil {
-		log.Error("orm: open error(%v)", err)
+		log.Error("orm: db pool error(%v)", err)
 		panic(err)
 	}
 	sqlDB.SetMaxIdleConns(c.Idle)
