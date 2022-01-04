@@ -1,7 +1,12 @@
 package main
 
 import (
+	"fmt"
+	"log"
+	"os"
 	"os/exec"
+	"path"
+	"strings"
 )
 
 const (
@@ -24,5 +29,20 @@ func installGRPCGen() error {
 }
 
 func genGRPC(files []string) error {
-	return generate(_grpcProtoc, files)
+	pwd, _ := os.Getwd()
+	gosrc := path.Join(gopath(), "src")
+	ext, err := latestKratos()
+	if err != nil {
+		return err
+	}
+	line := fmt.Sprintf(_grpcProtoc, gosrc, ext, pwd)
+	log.Println(line, strings.Join(files, " "))
+	args := strings.Split(line, " ")
+	args = append(args, files...)
+	cmd := exec.Command(args[0], args[1:]...)
+	cmd.Dir = pwd
+	cmd.Env = os.Environ()
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }
