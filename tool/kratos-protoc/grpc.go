@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -35,12 +36,20 @@ func genGRPC(files []string) error {
 	if err != nil {
 		return err
 	}
+
+	i := strings.Index(pwd, "app")
+	cmdDir := filepath.Dir(pwd[:i-1])
+	var cmdFiles []string
+	for _ ,file := range files {
+		cmdFiles = append(cmdFiles, fmt.Sprintf("%s/%s", pwd[len(cmdDir)+1:], file))
+	}
+
 	line := fmt.Sprintf(_grpcProtoc, gosrc, ext, pwd)
-	log.Println(line, strings.Join(files, " "))
+	log.Println(line, strings.Join(cmdFiles, " "))
 	args := strings.Split(line, " ")
-	args = append(args, files...)
+	args = append(args, cmdFiles...)
 	cmd := exec.Command(args[0], args[1:]...)
-	cmd.Dir = pwd
+	cmd.Dir = cmdDir
 	cmd.Env = os.Environ()
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
