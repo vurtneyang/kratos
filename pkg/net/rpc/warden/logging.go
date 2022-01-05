@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/peer"
 
@@ -167,6 +168,13 @@ func serverLogging(logFlag int8) grpc.UnaryServerInterceptor {
 		}
 		if err != nil {
 			logFields = append(logFields, log.KVString("error", err.Error()), log.KVString("stack", fmt.Sprintf("%+v", err)))
+
+			// cause root error
+			rootErr := errors.Cause(err)
+			if rootErr != nil {
+				logFields = append(logFields, log.KVString("root_error", rootErr.Error()), log.KVString("root_error_stack",  fmt.Sprintf("%+v", rootErr)))
+			}
+
 		}
 		logFn(code, duration)(ctx, logFields...)
 		return resp, err
