@@ -1,6 +1,7 @@
 package p2c
 
 import (
+	"fmt"
 	"math"
 	"math/rand"
 	"strconv"
@@ -11,6 +12,7 @@ import (
 	"kratos/pkg/conf/env"
 
 	"kratos/pkg/log"
+	ng "kratos/pkg/naming/nacosgrpc"
 	nmd "kratos/pkg/net/metadata"
 	wmd "kratos/pkg/net/rpc/warden/internal/metadata"
 
@@ -114,11 +116,15 @@ func (*p2cPickerBuilder) Build(info base.PickerBuildInfo) balancer.Picker {
 	}
 	for sc, sci := range readySCs {
 		addr := sci.Address
-		meta, ok := sci.Address.Metadata.(wmd.MD)
+		meta2, ok := sci.Address.Metadata.(ng.MD)
 		if !ok {
-			meta = wmd.MD{
+			meta2 = ng.MD{
 				Weight: 10,
 			}
+		}
+		meta:= wmd.MD{
+			Weight: meta2.Weight,
+			Color: meta2.Color,
 		}
 		subc := &subConn{
 			conn: sc,
@@ -164,6 +170,7 @@ func (p *p2cPicker) Pick(opts balancer.PickInfo) (balancer.PickResult, error) {
 	}
 	if color != "" {
 		if cp, ok := p.colors[color]; ok {
+			fmt.Println("get cp:%v",cp)
 			return cp.pick(opts)
 		}
 	}

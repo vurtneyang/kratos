@@ -30,6 +30,12 @@ var (
 	ErrNoInstances     = errors.New("no valid instance")
 )
 
+// MD is context metadata for balancer and resolver
+type MD struct {
+	Weight uint64
+	Color  string
+}
+
 type nacosResolver struct {
 	nacosClient nacos.ServiceCmdable
 	cc          resolver.ClientConn
@@ -164,6 +170,10 @@ func (c *nacosResolver) getInstances(service *nacos.Service) ([]resolver.Address
 		addr := resolver.Address{
 			Addr:       fmt.Sprintf("%s:%d", ins.Ip, ins.Port),
 			ServerName: c.serviceName,
+			Metadata: MD{
+				Color: ins.Metadata["color"],
+				Weight: uint64(ins.Weight),
+			},
 		}
 		w := ins.Weight
 		var weight uint32

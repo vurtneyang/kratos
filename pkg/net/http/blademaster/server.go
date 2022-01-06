@@ -311,6 +311,7 @@ func (engine *Engine) handleContext(c *Context) {
 		tm = ctm
 	}
 	md := metadata.MD{
+		metadata.Color: color(req),
 		metadata.RemoteIP:    remoteIP(req),
 		metadata.RemotePort:  remotePort(req),
 		metadata.Criticality: string(criticality.Critical),

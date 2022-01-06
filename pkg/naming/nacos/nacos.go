@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -184,7 +185,7 @@ func RegisterNacos(cluster,groupName,serverName string) error {
 		Enable:      true,
 		Healthy:     true,
 		Ephemeral:   true,
-		Metadata:    map[string]string{"gRPC": fmt.Sprintf("%d", getGrpcPort()), "HTTP": fmt.Sprintf("%d", getHttpPort())},
+		Metadata:    map[string]string{"gRPC": fmt.Sprintf("%d", getGrpcPort()), "HTTP": fmt.Sprintf("%d", getHttpPort()),"color":getEnvColor()},
 		ClusterName: cluster, // default value is DEFAULT
 		GroupName:   groupName, // default value is DEFAULT_GROUP
 	}
@@ -295,6 +296,11 @@ func getHttpPort() (port uint64) {
 		port = 8000
 	}
 	return
+}
+
+// 获取本地染色信息
+func getEnvColor()string{
+	return os.Getenv("DEPLOY_COLOR")
 }
 
 func NewNameClient() (c naming_client.INamingClient, err error) {

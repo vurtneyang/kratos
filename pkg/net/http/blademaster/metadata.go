@@ -20,6 +20,7 @@ const (
 	// http head
 	_httpHeaderUser         = "x1-bmspy-user"
 	_httpHeaderTimeout      = "x1-bmspy-timeout"
+	_httpHeaderColor        = "x1-color"
 	_httpHeaderRemoteIP     = "x-backend-bm-real-ip"
 	_httpHeaderRemoteIPPort = "x-backend-bm-real-ipport"
 )
@@ -93,6 +94,11 @@ func timeout(req *http.Request) time.Duration {
 		timeout -= 20 // reduce 20ms every time.
 	}
 	return time.Duration(timeout) * time.Millisecond
+}
+
+//color get request color from http request.
+func color(req *http.Request) string {
+	return req.Header.Get(_httpHeaderColor)
 }
 
 // remoteIP implements a best effort algorithm to return the real client IP, it parses
