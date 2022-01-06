@@ -2,6 +2,7 @@ package render
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
@@ -11,8 +12,8 @@ var pbContentType = []string{"application/x-protobuf"}
 
 // Render (PB) writes data with protobuf ContentType.
 func (r PB) Render(w http.ResponseWriter) error {
-	if r.TTL <= 0 {
-		r.TTL = 1
+	if r.Now <= 0 {
+		r.Now = uint64(time.Now().Unix())
 	}
 	return writePB(w, r)
 }
