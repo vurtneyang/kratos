@@ -1,6 +1,8 @@
 package orm
 
 import (
+	"context"
+	"fmt"
 	"strings"
 	"time"
 
@@ -11,6 +13,10 @@ import (
 	// database driver
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
+
+	mysqlV2 "gorm.io/driver/mysql"
+	gormV2 "gorm.io/gorm"
+	gormLogger "gorm.io/gorm/logger"
 )
 
 // Config mysql config.
@@ -25,6 +31,13 @@ type ormLog struct{}
 
 func (l ormLog) Print(v ...interface{}) {
 	log.Info(strings.Repeat("%v ", len(v)), v...)
+}
+
+func (l ormLog) Printf(format string, v ...interface{}) {
+	log.Warnv(context.Background(),
+		log.KVString("log", fmt.Sprintf(format, v...)),
+		log.KVString("source", "mysql-log"),
+	)
 }
 
 func init() {
@@ -45,5 +58,30 @@ func NewMySQL(c *Config) (db *gorm.DB) {
 
 	db.Callback().Create().Replace("gorm:update_time_stamp", updateTimeStampForCreateCallback)
 	db.Callback().Update().Replace("gorm:update_time_stamp", updateTimeStampForUpdateCallback)
+	return
+}
+
+func NewMySqlV2(c *Config) (db *gormV2.DB) {
+	db, err := gormV2.Open(mysqlV2.Open(c.DSN), &gormV2.Config{
+		Logger: gormLogger.New(ormLog{}, gormLogger.Config{
+			SlowThreshold: 200 * time.Millisecond,
+			LogLevel:      gormLogger.Warn,
+		}),
+	})
+
+	if err != nil {
+		log.Error("orm: open error(%v)", err)
+		panic(err)
+	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Error("orm: db pool error(%v)", err)
+		panic(err)
+	}
+	sqlDB.SetMaxIdleConns(c.Idle)
+	sqlDB.SetMaxOpenConns(c.Active)
+	sqlDB.SetConnMaxLifetime(time.Duration(c.IdleTimeout))
+
 	return
 }
