@@ -108,9 +108,9 @@ func (c *HTTPTransport) Flush() (int, error) {
 	if count == 0 {
 		return 0, nil
 	}
-	err := c.send(c.spans)
+	//err := c.send(c.spans)
 	c.spans = c.spans[:0]
-	return count, err
+	return count, nil
 }
 
 // Close implements Transport.
