@@ -31,6 +31,6 @@ func init() {
 
 // Init Init
 func Init() {
-	c := &Config{Endpoint: _jaegerEndpoint, BatchSize: 200}
-	trace.SetGlobalTracer(trace.NewTracer(_jaegerAppID, newReport(c), true))
+	c := &Config{Endpoint: _jaegerEndpoint, BatchSize: 30}
+	trace.SetGlobalTracer(trace.NewTracer(_jaegerAppID, newReport(c), false))
 }

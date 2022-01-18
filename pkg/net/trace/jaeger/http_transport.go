@@ -17,7 +17,7 @@ import (
 )
 
 // Default timeout for http request in seconds
-const defaultHTTPTimeout = time.Second * 10
+const defaultHTTPTimeout = time.Millisecond * 100
 
 // HTTPTransport implements Transport by forwarding spans to a http server.
 type HTTPTransport struct {
