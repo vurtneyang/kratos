@@ -2,6 +2,7 @@ package jaeger
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -16,7 +17,7 @@ import (
 )
 
 // Default timeout for http request in seconds
-const defaultHTTPTimeout = time.Millisecond * 150
+const defaultHTTPTimeout = time.Second * 10
 
 // HTTPTransport implements Transport by forwarding spans to a http server.
 type HTTPTransport struct {
@@ -156,7 +157,7 @@ func (c *HTTPTransport) send(spans []*j.Span) {
 		log.Info("[trace]error from collector: %d", resp.StatusCode)
 		return
 	}
-	log.Info("[trace]send success, duration:%d", time.Since(bt))
+	log.Infov(context.Background(), log.KVFloat64("ts", time.Since(bt).Seconds()), log.KVString("log", "[trace]send success"))
 }
 
 func serializeThrift(obj thrift.TStruct) (*bytes.Buffer, error) {
