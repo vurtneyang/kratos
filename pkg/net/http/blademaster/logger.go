@@ -16,6 +16,11 @@ import (
 func Logger() HandlerFunc {
 	const noUser = "no_user"
 	return func(c *Context) {
+		if c.Request.URL.String() == monitorPing {
+			c.Next()
+			return
+		}
+
 		now := time.Now()
 		req := c.Request
 		path := req.URL.Path

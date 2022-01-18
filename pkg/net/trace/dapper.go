@@ -9,8 +9,8 @@ import (
 
 const (
 	_maxLevel = 64
-	// hard code reset probability at 0.00025, 1/4000
-	_probability = 0.00025
+	// hard code reset probability at 0.25, 1/40
+	_probability = 0.25
 )
 
 // NewTracer new a tracer.

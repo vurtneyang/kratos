@@ -15,8 +15,11 @@ const _defaultComponentName = "net/http"
 // Trace is trace middleware
 func Trace() HandlerFunc {
 	return func(c *Context) {
-		// handle http request
-		// get derived trace from http request header
+		if c.Request.URL.String() == monitorPing {
+			c.Next()
+			return
+		}
+
 		t, err := trace.Extract(trace.HTTPFormat, c.Request.Header)
 		if err != nil {
 			var opts []trace.Option
