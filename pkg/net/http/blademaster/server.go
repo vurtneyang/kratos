@@ -25,6 +25,7 @@ import (
 
 const (
 	defaultMaxMemory = 32 << 20 // 32 MB
+	monitorPing = "/monitor/ping"
 )
 
 var (

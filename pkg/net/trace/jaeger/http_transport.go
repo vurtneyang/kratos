@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"kratos/pkg/log"
 	"net/http"
 	"time"
 
@@ -15,7 +16,7 @@ import (
 )
 
 // Default timeout for http request in seconds
-const defaultHTTPTimeout = time.Second * 5
+const defaultHTTPTimeout = time.Millisecond * 150
 
 // HTTPTransport implements Transport by forwarding spans to a http server.
 type HTTPTransport struct {
@@ -108,9 +109,10 @@ func (c *HTTPTransport) Flush() (int, error) {
 	if count == 0 {
 		return 0, nil
 	}
-	err := c.send(c.spans)
+	content := c.spans
+	go c.send(content)
 	c.spans = c.spans[:0]
-	return count, err
+	return count, nil
 }
 
 // Close implements Transport.
@@ -118,18 +120,21 @@ func (c *HTTPTransport) Close() error {
 	return nil
 }
 
-func (c *HTTPTransport) send(spans []*j.Span) error {
+func (c *HTTPTransport) send(spans []*j.Span) {
+	bt := time.Now()
 	batch := &j.Batch{
 		Spans:   spans,
 		Process: c.process,
 	}
 	body, err := serializeThrift(batch)
 	if err != nil {
-		return err
+		log.Info("[trace]serializeThrift err:%+v", err)
+		return
 	}
 	req, err := http.NewRequest("POST", c.url, body)
 	if err != nil {
-		return err
+		log.Info("[trace]http NewRequest err:%+v", err)
+		return
 	}
 	req.Header.Set("Content-Type", "application/x-thrift")
 	for k, v := range c.headers {
@@ -142,14 +147,16 @@ func (c *HTTPTransport) send(spans []*j.Span) error {
 
 	resp, err := c.client.Do(req)
 	if err != nil {
-		return err
+		log.Info("[trace]http post err:%+v", err)
+		return
 	}
 	io.Copy(ioutil.Discard, resp.Body)
 	resp.Body.Close()
 	if resp.StatusCode >= http.StatusBadRequest {
-		return fmt.Errorf("error from collector: %d", resp.StatusCode)
+		log.Info("[trace]error from collector: %d", resp.StatusCode)
+		return
 	}
-	return nil
+	log.Info("[trace]send success, duration:%d", time.Since(bt))
 }
 
 func serializeThrift(obj thrift.TStruct) (*bytes.Buffer, error) {
