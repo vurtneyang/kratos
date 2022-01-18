@@ -41,7 +41,7 @@ func (r *JaegerReporter) WriteSpan(raw *trace.Span) (err error) {
 	}
 
 	if cnt, err := r.transport.Append(span); err != nil {
-		log.Info("[info] write append cnt:%d, err:%v", cnt, err)
+		log.Info("[info] write append cnt:%d, traceid:%s, err:%v", cnt, traceID, err)
 	}
 
 	return err
