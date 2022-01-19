@@ -438,9 +438,6 @@ func FromContext(ctx context.Context) (t time.Time, ok bool) {
 }
 
 // NewContext new a trace context.
-func NewContext(ctx context.Context, t xtime.Duration) context.Context {
-	_, ctx, cancel := t.Shrink(ctx)
-	defer cancel()
-
+func NewContext(ctx context.Context) context.Context {
 	return context.WithValue(ctx, _nacosKey, time.Now())
 }
