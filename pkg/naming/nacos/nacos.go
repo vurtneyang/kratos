@@ -2,6 +2,7 @@ package nacos
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	xtime "kratos/pkg/time"
 	"net"
@@ -414,6 +415,14 @@ func (p *TracePlugin) PostCall(ctx context.Context, servicePath, serviceMethod s
 		_metricClientReqCodeTotal.Inc(servicePath, serviceMethod, code)
 	}
 
+	var resp interface{}
+	if jsonData, ok := reply.(*json.RawMessage); ok {
+		jsonVal, _ := jsonData.MarshalJSON()
+		resp = string(jsonVal)
+	} else {
+		resp = reply
+	}
+
 	lf(ctx,
 		log.KVString("service", servicePath),
 		log.KVString("path", serviceMethod),
@@ -421,7 +430,7 @@ func (p *TracePlugin) PostCall(ctx context.Context, servicePath, serviceMethod s
 		log.KVString("source", "rpcx-access-log"),
 		log.KVString("error", errMsg),
 		log.KVString("args", fmt.Sprintf("%+v", args)),
-		log.KVString("reply", fmt.Sprintf("%+v", reply)),
+		log.KVString("reply", fmt.Sprintf("%+v", resp)),
 	)
 
 	return nil
