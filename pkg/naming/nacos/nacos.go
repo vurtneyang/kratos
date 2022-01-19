@@ -3,6 +3,7 @@ package nacos
 import (
 	"context"
 	"fmt"
+	xtime "kratos/pkg/time"
 	"net"
 	"strconv"
 	"strings"
@@ -80,6 +81,7 @@ type RpcxConf struct {
 	Server      *ServerConf
 	NacosServer *NacosServerConf
 	NacosClient *NacosClientConf
+	Timeout     xtime.Duration
 }
 
 type watcher struct {
@@ -98,7 +100,7 @@ type Registry struct {
 	cli  naming_client.INamingClient
 }
 
-func NewRpcxDao(cluster,groupName,serverName string) (dao *RpcXDao, err error) {
+func NewRpcxDao(cluster, groupName, serverName string) (dao *RpcXDao, err error) {
 	if groupName == "" {
 		groupName = DefaultGroupName
 	}
@@ -112,9 +114,12 @@ func NewRpcxDao(cluster,groupName,serverName string) (dao *RpcXDao, err error) {
 		log.Error("[Dao.New] UnmarshalToml err:%v", err)
 		return dao, err
 	}
+	if cfg.Timeout <= 0 {
+		cfg.Timeout = xtime.Duration(time.Millisecond * 500)
+	}
 	dao.Conf = &cfg
 	// New RpcClients
-	dao.Client, err = newClient(dao.Conf, cluster,groupName,serverName)
+	dao.Client, err = newClient(dao.Conf, cluster, groupName, serverName)
 	if err != nil {
 		log.Error("New Dao newClient err:%v", err)
 		return dao, err
@@ -122,7 +127,7 @@ func NewRpcxDao(cluster,groupName,serverName string) (dao *RpcXDao, err error) {
 	return dao, err
 }
 
-func newClient(conf *RpcxConf,cluster,groupName, serverName string) (c client.XClient, err error) {
+func newClient(conf *RpcxConf, cluster, groupName, serverName string) (c client.XClient, err error) {
 	if groupName == "" {
 		groupName = DefaultGroupName
 	}
@@ -159,12 +164,15 @@ func newClient(conf *RpcxConf,cluster,groupName, serverName string) (c client.XC
 	//
 	c = client.NewXClient(serverName, client.Failover, client.RandomSelect, discovery, client.DefaultOption)
 	c.Auth(conf.NacosServer.NameSpaceId)
+	pc := c.GetPlugins()
+	pc.Add(&TracePlugin{})
+	c.SetPlugins(pc)
 	return c, err
 }
 
 // 将服务注册到nacos中
-func RegisterNacos(cluster,groupName,serverName string) error {
-	if groupName == ""{
+func RegisterNacos(cluster, groupName, serverName string) error {
+	if groupName == "" {
 		groupName = DefaultGroupName
 	}
 	if cluster == "" {
@@ -185,7 +193,7 @@ func RegisterNacos(cluster,groupName,serverName string) error {
 		Healthy:     true,
 		Ephemeral:   true,
 		Metadata:    map[string]string{"gRPC": fmt.Sprintf("%d", getGrpcPort()), "HTTP": fmt.Sprintf("%d", getHttpPort())},
-		ClusterName: cluster, // default value is DEFAULT
+		ClusterName: cluster,   // default value is DEFAULT
 		GroupName:   groupName, // default value is DEFAULT_GROUP
 	}
 	_, err = client.RegisterInstance(registerInfo)
@@ -193,8 +201,8 @@ func RegisterNacos(cluster,groupName,serverName string) error {
 }
 
 // 将服务从nacos中注销
-func DeregisterNacos(cluster,groupName,serverName string) error {
-	if groupName == ""{
+func DeregisterNacos(cluster, groupName, serverName string) error {
+	if groupName == "" {
 		groupName = DefaultGroupName
 	}
 	if cluster == "" {
@@ -208,7 +216,7 @@ func DeregisterNacos(cluster,groupName,serverName string) error {
 		Port:        getGrpcPort(),
 		ServiceName: serverName,
 		Ephemeral:   true,
-		Cluster:     cluster, // default value is DEFAULT
+		Cluster:     cluster,   // default value is DEFAULT
 		GroupName:   groupName, // default value is DEFAULT_GROUP
 	}
 	_, err = client.DeregisterInstance(unRegisterInfo)
@@ -379,6 +387,57 @@ func Target(nacosAddr string, cluster, groupName, serviceName string, ops ...Opt
 		tmp = "nacos://" + nacosAddr[7:]
 	}
 	str := fmt.Sprintf("%s?s=%s&n=%s&cs=%s&g=%s&m=%s&d=%d", tmp, serviceName, opts.nameSpaceID, opts.clusters, opts.groupName, opts.mode, opts.hbInterval/time.Millisecond)
-	//fmt.Println(str)
+
 	return str
+}
+
+type TracePlugin struct{}
+
+func (p *TracePlugin) PreCall(ctx context.Context, servicePath, serviceMethod string, args interface{}) error {
+	return nil
+}
+
+func (p *TracePlugin) PostCall(ctx context.Context, servicePath, serviceMethod string, args interface{}, reply interface{}, err error) error {
+	var code, errMsg string
+	lf := log.Infov
+	duration := time.Second
+	if err != nil {
+		lf = log.Errorv
+		errMsg = err.Error()
+		code = "-1"
+	}
+
+	t, ok := FromContext(ctx)
+	if ok {
+		duration = time.Since(t)
+		_metricClientReqDur.Observe(int64(duration/time.Millisecond), servicePath, serviceMethod)
+		_metricClientReqCodeTotal.Inc(servicePath, serviceMethod, code)
+	}
+
+	lf(ctx,
+		log.KVString("service", servicePath),
+		log.KVString("path", serviceMethod),
+		log.KVFloat64("ts", duration.Seconds()),
+		log.KVString("source", "rpcx-access-log"),
+		log.KVString("error", errMsg),
+		log.KVString("args", fmt.Sprintf("%+v", args)),
+		log.KVString("reply", fmt.Sprintf("%+v", reply)),
+	)
+
+	return nil
+}
+
+type nacosKey string
+
+var _nacosKey nacosKey = "kratos/pkg/naming/nacos/time"
+
+// FromContext returns the trace bound to the context, if any.
+func FromContext(ctx context.Context) (t time.Time, ok bool) {
+	t, ok = ctx.Value(_nacosKey).(time.Time)
+	return
+}
+
+// NewContext new a trace context.
+func NewContext(ctx context.Context) context.Context {
+	return context.WithValue(ctx, _nacosKey, time.Now())
 }
