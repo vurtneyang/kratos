@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/pkg/errors"
-	"io"
+	"io/ioutil"
 	"kratos/pkg/log"
 	xtime "kratos/pkg/time"
 	"net/http"
@@ -117,7 +117,7 @@ func (c *MatrixClient) do(method, path, params string) (body []byte, response *R
 	}
 	defer resp.Body.Close()
 
-	body, err = io.ReadAll(resp.Body)
+	body, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "resp io ReadAll err")
 	}
