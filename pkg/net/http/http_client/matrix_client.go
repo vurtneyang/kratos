@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 	"io/ioutil"
 	"kratos/pkg/log"
+	"kratos/pkg/net/metadata"
 	xtime "kratos/pkg/time"
 	"net/http"
 	"strconv"
@@ -15,17 +16,23 @@ import (
 )
 
 type MatrixConfig struct {
-	Host           string
-	WorkspaceToken string
-	XProjectID     string
-	Secret         string
-	Timeout        xtime.Duration
+	Host       string
+	XProjectID string
+	XAppID     string
+	MasterKey  string
+	ClientKey  string
+	Timeout    xtime.Duration
 }
 
 type MatrixClient struct {
 	config *MatrixConfig
 	cli    *http.Client
 }
+
+const (
+	clientType = "client"
+	masterType = "master"
+)
 
 func NewMatrixClient(conf *MatrixConfig) *MatrixClient {
 	return &MatrixClient{
@@ -37,14 +44,6 @@ func NewMatrixClient(conf *MatrixConfig) *MatrixClient {
 			Timeout: time.Duration(conf.Timeout),
 		},
 	}
-}
-
-func (c *MatrixClient) Get(ctx context.Context, path, params string, reply interface{}) error {
-	return c.Request(ctx, "GET", path, params, reply)
-}
-
-func (c *MatrixClient) Post(ctx context.Context, path, params string, reply interface{}) error {
-	return c.Request(ctx, "POST", path, params, reply)
 }
 
 type Args struct {
@@ -59,10 +58,29 @@ type Response struct {
 	Now     int64           `json:"now"`
 }
 
-func (c *MatrixClient) Request(ctx context.Context, method, path, params string, reply interface{}) error {
+func (c *MatrixClient) Post(ctx context.Context, path, params string, reply interface{}) error {
+	args := &Args{
+		Query: params,
+	}
+	qlParams, err := json.Marshal(args)
+	if err != nil {
+		return errors.Wrap(err, "graphQl json Marshal args err")
+	}
+	return c.Request(ctx, "POST", clientType, path, string(qlParams), reply)
+}
+
+func (c *MatrixClient) ClientPost(ctx context.Context, path, params string, reply interface{}) error {
+	return c.Request(ctx, "POST", clientType, path, params, reply)
+}
+
+func (c *MatrixClient) MasterPost(ctx context.Context, path, params string, reply interface{}) error {
+	return c.Request(ctx, "POST", masterType, path, params, reply)
+}
+
+func (c *MatrixClient) Request(ctx context.Context, method, cType, path, params string, reply interface{}) error {
 	bt := time.Now()
 
-	body, response, err := c.do(method, path, params)
+	body, response, err := c.do(ctx, method, cType, path, params)
 
 	var msg string
 	if response != nil && response.Code != "" {
@@ -96,18 +114,10 @@ func (c *MatrixClient) Request(ctx context.Context, method, path, params string,
 	return err
 }
 
-func (c *MatrixClient) do(method, path, params string) (body []byte, response *Response, err error) {
+func (c *MatrixClient) do(ctx context.Context, method, cType, path, params string) (body []byte, response *Response, err error) {
 	response = &Response{}
 
-	args := &Args{
-		Query: params,
-	}
-	val, err := json.Marshal(args)
-	if err != nil {
-		return nil, nil, errors.Wrap(err, "json Marshal args err")
-	}
-
-	request, err := c.buildRequest(method, path, string(val))
+	request, err := c.buildRequest(ctx, method, cType, path, params)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "buildRequest err")
 	}
@@ -134,16 +144,25 @@ func (c *MatrixClient) do(method, path, params string) (body []byte, response *R
 	return
 }
 
-func (c *MatrixClient) buildRequest(method, path, params string) (request *http.Request, err error) {
+func (c *MatrixClient) buildRequest(ctx context.Context, method, cType, path, params string) (request *http.Request, err error) {
 	url := fmt.Sprintf("%s/%s", c.config.Host, path)
 	request, err = http.NewRequest(method, url, strings.NewReader(params))
 	if err != nil {
 		return nil, errors.Wrap(err, "buildRequest err")
 	}
-	request.Header.Add("X-Sign", GetSign(c.config.Secret, time.Now().Unix()))
-	request.Header.Add("Workspace-Token", c.config.WorkspaceToken)
-	request.Header.Add("X-Project-ID", c.config.XProjectID)
+
 	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("X-Project-ID", c.config.XProjectID)
+
+	if cType == masterType {
+		request.Header.Add("X-Sign", GetSign(c.config.MasterKey, time.Now().Unix()))
+
+		userId := metadata.Int64(ctx, metadata.Mid)
+		request.Header.Add("X-GID", strconv.FormatInt(userId, 10))
+		request.Header.Add("X-APPID", c.config.XAppID)
+	} else {
+		request.Header.Add("X-Sign", GetSign(c.config.ClientKey, time.Now().Unix()))
+	}
 
 	return
 }

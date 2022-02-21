@@ -99,6 +99,6 @@ func Target(nacosAddr string, cluster, groupName, serviceName string, ops ...Opt
 		tmp = "nacos://" + nacosAddr[7:]
 	}
 	str := fmt.Sprintf("%s?s=%s&n=%s&cs=%s&g=%s&m=%s&d=%d", tmp, serviceName, opts.nameSpaceID, opts.clusters, opts.groupName, opts.mode, opts.hbInterval/time.Millisecond)
-	fmt.Println(str)
+
 	return str
 }
