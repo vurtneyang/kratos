@@ -58,6 +58,7 @@ type Response struct {
 	Now     int64           `json:"now"`
 }
 
+// Post 适用于graphql方式请求调用
 func (c *MatrixClient) Post(ctx context.Context, path, params string, reply interface{}) error {
 	args := &Args{
 		Query: params,
@@ -69,12 +70,22 @@ func (c *MatrixClient) Post(ctx context.Context, path, params string, reply inte
 	return c.Request(ctx, "POST", clientType, path, string(qlParams), reply)
 }
 
-func (c *MatrixClient) ClientPost(ctx context.Context, path, params string, reply interface{}) error {
-	return c.Request(ctx, "POST", clientType, path, params, reply)
+// ClientPost 适用于使用clientKey签名方式请求调用
+func (c *MatrixClient) ClientPost(ctx context.Context, path string, params interface{}, reply interface{}) error {
+	paramsStr, err := json.Marshal(params)
+	if err != nil {
+		return errors.Wrap(err, "ClientPost json Marshal params err")
+	}
+	return c.Request(ctx, "POST", clientType, path, string(paramsStr), reply)
 }
 
-func (c *MatrixClient) MasterPost(ctx context.Context, path, params string, reply interface{}) error {
-	return c.Request(ctx, "POST", masterType, path, params, reply)
+// MasterPost 适用于使用masterKey签名方式请求调用
+func (c *MatrixClient) MasterPost(ctx context.Context, path string, params interface{}, reply interface{}) error {
+	paramsStr, err := json.Marshal(params)
+	if err != nil {
+		return errors.Wrap(err, "MasterPost json Marshal params err")
+	}
+	return c.Request(ctx, "POST", masterType, path, string(paramsStr), reply)
 }
 
 func (c *MatrixClient) Request(ctx context.Context, method, cType, path, params string, reply interface{}) error {
