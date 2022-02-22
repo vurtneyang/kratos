@@ -87,6 +87,15 @@ func (c *MatrixClient) MasterPost(ctx context.Context, path string, params inter
 	return c.Request(ctx, "POST", masterType, path, string(paramsStr), reply)
 }
 
+// MasterPatch 适用于使用masterKey签名方式发起更新请求
+func (c *MatrixClient) MasterPatch(ctx context.Context, path string, params interface{}, reply interface{}) error {
+	paramsStr, err := json.Marshal(params)
+	if err != nil {
+		return errors.Wrap(err, "MasterPost json Marshal params err")
+	}
+	return c.Request(ctx, "PATCH", masterType, path, string(paramsStr), reply)
+}
+
 func (c *MatrixClient) Request(ctx context.Context, method, cType, path, params string, reply interface{}) error {
 	bt := time.Now()
 
