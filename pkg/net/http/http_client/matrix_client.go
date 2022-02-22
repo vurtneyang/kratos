@@ -7,7 +7,6 @@ import (
 	"github.com/pkg/errors"
 	"io/ioutil"
 	"kratos/pkg/log"
-	"kratos/pkg/net/metadata"
 	xtime "kratos/pkg/time"
 	"net/http"
 	"strconv"
@@ -168,8 +167,9 @@ func (c *MatrixClient) buildRequest(ctx context.Context, method, cType, path, pa
 	if cType == masterType {
 		request.Header.Add("X-Sign", GetSign(c.config.MasterKey, time.Now().Unix()))
 
-		userId := metadata.Int64(ctx, metadata.Mid)
-		request.Header.Add("X-GID", strconv.FormatInt(userId, 10))
+		if userId, ok := FromContext(ctx); ok {
+			request.Header.Add("X-GID", strconv.FormatInt(userId, 10))
+		}
 		request.Header.Add("X-APPID", c.config.XAppID)
 	} else {
 		request.Header.Add("X-Sign", GetSign(c.config.ClientKey, time.Now().Unix()))
