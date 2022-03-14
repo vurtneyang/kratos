@@ -157,7 +157,11 @@ func (c *MatrixClient) do(ctx context.Context, method, cType, path, params strin
 	}
 
 	if response.Code != "OK" {
-		err = errors.New(response.Code)
+		if response.Code != "" {
+			err = errors.New(response.Code)
+		} else {
+			err = errors.New("matrix response error")
+		}
 	}
 
 	return
