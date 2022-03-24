@@ -8,6 +8,7 @@ import (
 	"strings"
 	"sync"
 	"text/template"
+	"time"
 
 	"kratos/pkg/net/metadata"
 
@@ -255,16 +256,17 @@ func (c *Context) JSON(data interface{}, err error) {
 	*/
 	writeStatusCode(c.Writer, bcode.Code())
 	// 历史项目中需要兼容返回code message 和其他返回内容时，快速稳定兼容。不需要调整业务代码
-	cc:= strings.Split(bcode.Message(),"||")
-	if len(cc) > 1 {	// 兼容逻辑
+	cc := strings.Split(bcode.Message(), "||")
+	if len(cc) > 1 { // 兼容逻辑
 		out := make(map[string]interface{})
 		out["ret"] = bcode.Code()
 		out["message"] = cc[1]
 		out["code"] = cc[0]
+		out["now"] = time.Now().Unix()
 		out["data"] = data
-		c.Render(code,render.MapJSON(out))
+		c.Render(code, render.MapJSON(out))
 
-	}else {
+	} else {
 		c.Render(code, render.JSON{
 			Code:    bcode.Code(),
 			Message: bcode.Message(),

@@ -4,11 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	xtime "kratos/pkg/time"
 	"net"
 	"strconv"
 	"strings"
 	"time"
+
+	xtime "kratos/pkg/time"
 
 	"kratos/pkg/conf/paladin"
 	"kratos/pkg/log"
@@ -58,6 +59,7 @@ type ServerConf struct {
 
 type NacosServerConf struct {
 	IpAddr      string `json:"ipAddr"`
+	IpAddr2     string `json:"ipAddr2"` //兼容rpcx注册集群不一致的问题
 	Port        uint64 `json:"port"`
 	NameSpaceId string `json:"nameSpaceId"`
 	ProjectId   string `json:"projectId"`
@@ -139,6 +141,9 @@ func newClient(conf *RpcxConf, cluster, groupName, serverName string) (c client.
 		IpAddr: conf.NacosServer.IpAddr,
 		Port:   conf.NacosServer.Port,
 	}}
+	if conf.NacosServer.IpAddr2 != "" { // 兼容rpcx的过渡期，考虑到不一样的nacos配置
+		serverConfig[0].IpAddr = conf.NacosServer.IpAddr2
+	}
 
 	clientConfig := constant.ClientConfig{
 		TimeoutMs:            conf.NacosClient.TimeOutMs,
