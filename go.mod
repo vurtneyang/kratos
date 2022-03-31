@@ -7,17 +7,22 @@ require (
 	github.com/HdrHistogram/hdrhistogram-go v1.1.2 // indirect
 	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/aliyun/aliyun-log-go-sdk v0.1.8
+	github.com/aliyunmq/mq-http-go-sdk v1.0.3
+	github.com/apache/rocketmq-client-go/v2 v2.1.0
 	github.com/aristanetworks/goarista v0.0.0-20211007183212-895f499c075c // indirect
 	github.com/cznic/b v0.0.0-20181122101859-a26611c4d92d // indirect
 	github.com/cznic/mathutil v0.0.0-20181122101859-297441e03548 // indirect
 	github.com/cznic/strutil v0.0.0-20181122101858-275e90344537 // indirect
 	github.com/dgryski/go-farm v0.0.0-20190423205320-6a90982ecee2
+	github.com/facebookgo/stack v0.0.0-20160209184415-751773369052 // indirect
 	github.com/fatih/color v1.10.0
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/go-zookeeper/zk v1.0.1
 	github.com/gobuffalo/packr/v2 v2.8.1
+	github.com/gogap/errors v0.0.0-20210818113853-edfbba0ddea9
+	github.com/gogap/stack v0.0.0-20150131034635-fef68dddd4f8 // indirect
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.5.2
 	github.com/jinzhu/gorm v1.9.16
@@ -44,11 +49,11 @@ require (
 	github.com/uber/jaeger-client-go v2.25.0+incompatible
 	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/urfave/cli/v2 v2.3.0
+	github.com/valyala/fasthttp v1.34.0 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.0
 	go.etcd.io/etcd/client/v3 v3.5.0
 	go.uber.org/atomic v1.9.0
-	golang.org/x/net v0.0.0-20210917221730-978cfadd31cf
-	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
+	golang.org/x/net v0.0.0-20220225172249-27dd8689420f
 	golang.org/x/tools v0.1.6
 	google.golang.org/genproto v0.0.0-20210921142501-181ce0d877f6
 	google.golang.org/grpc v1.40.0
