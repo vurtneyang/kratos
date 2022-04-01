@@ -6,18 +6,13 @@ import (
 	"github.com/apache/rocketmq-client-go/v2/primitive"
 	"github.com/apache/rocketmq-client-go/v2/producer"
 	"kratos/pkg/log"
+	"sync/atomic"
 )
 
 type Publisher struct {
 	config   *PublisherConfig
 	producer rocketmq.Producer
-}
-
-type Config struct {
-	ServerAddress string
-	AccessKey     string
-	SecretKey     string
-	NameSpace     string
+	status   int32
 }
 
 type PublisherConfig struct {
@@ -59,6 +54,7 @@ func NewPublisher(c *PublisherConfig) (p *Publisher, err error) {
 		producer: pr,
 	}
 
+	atomic.StoreInt32(&p.status, stateRunning)
 
 	return
 }
@@ -74,7 +70,12 @@ func (p *Publisher) Publish(ctx context.Context, req *PublishMessageRequest) (re
 }
 
 func (p *Publisher) Close() {
-	err := p.producer.Shutdown()
+	var err error
+
+	if atomic.LoadInt32(&p.status) == stateRunning {
+		err = p.producer.Shutdown()
+	}
+
 	if err != nil {
 		log.Error("[Publisher]close err:%+v", err)
 	} else {

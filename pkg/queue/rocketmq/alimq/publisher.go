@@ -28,3 +28,5 @@ func NewPublisher(c *PublisherConfig) (p *Publisher) {
 func (p *Publisher) Publish(req mqHttpSdk.PublishMessageRequest) (resp mqHttpSdk.PublishMessageResponse, err error) {
 	return p.producer.PublishMessage(req)
 }
+
+func (p *Publisher) Close() {}

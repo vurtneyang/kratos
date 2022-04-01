@@ -6,11 +6,13 @@ import (
 	"github.com/apache/rocketmq-client-go/v2/consumer"
 	"github.com/apache/rocketmq-client-go/v2/primitive"
 	"kratos/pkg/log"
+	"sync/atomic"
 )
 
 type Subscriber struct {
 	config   *SubscriberConfig
 	consumer rocketmq.PushConsumer
+	status   int32
 }
 
 type SubscriberConfig struct {
@@ -63,14 +65,21 @@ func (s *Subscriber) Subscribe(handler func(context.Context, ...*primitive.Messa
 		return err
 	}
 
+	atomic.StoreInt32(&s.status, stateRunning)
+
 	return nil
 }
 
 func (s *Subscriber) Close() {
-	err := s.consumer.Shutdown()
+	var err error
+
+	if atomic.LoadInt32(&s.status) == stateRunning {
+		err = s.consumer.Shutdown()
+	}
+
 	if err != nil {
-		log.Error( "[Subscriber]topic:%s, groupName:%s close err:%v", s.config.Topic, s.config.GroupName, err)
+		log.Error("[Subscriber]topic:%s, groupName:%s close err:%v", s.config.Topic, s.config.GroupName, err)
 	} else {
-		log.Info( "[Subscriber]topic:%s, groupName:%s close", s.config.Topic, s.config.GroupName)
+		log.Info("[Subscriber]topic:%s, groupName:%s close", s.config.Topic, s.config.GroupName)
 	}
 }

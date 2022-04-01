@@ -7,6 +7,7 @@ import (
 	"kratos/pkg/log"
 	"kratos/pkg/sync/errgroup"
 	"strings"
+	"sync/atomic"
 )
 
 type Subscriber struct {
@@ -16,6 +17,7 @@ type Subscriber struct {
 	errChan     chan error
 	stopChan    chan bool
 	handlerFunc func([]mqHttpSdk.ConsumeMessageEntry)
+	status      int32
 	wg          *errgroup.Group
 }
 
@@ -55,6 +57,8 @@ func (s *Subscriber) Subscribe(handler func(messages []mqHttpSdk.ConsumeMessageE
 		s.worker()
 		return
 	})
+
+	atomic.StoreInt32(&s.status, stateRunning)
 }
 
 func (s *Subscriber) Ack(receiptHandles []string) error {
@@ -62,13 +66,17 @@ func (s *Subscriber) Ack(receiptHandles []string) error {
 }
 
 func (s *Subscriber) Close() {
-	close(s.stopChan)
+	var err error
 
-	err := s.wg.Wait()
+	if atomic.LoadInt32(&s.status) == stateRunning {
+		close(s.stopChan)
+		err = s.wg.Wait()
+	}
+
 	if err != nil {
-		log.Error( "[Subscriber]topic:%s, groupId:%s close err:%v", s.config.Topic, s.config.GroupId, err)
+		log.Error("[Subscriber]topic:%s, groupId:%s close err:%v", s.config.Topic, s.config.GroupId, err)
 	} else {
-		log.Info( "[Subscriber]topic:%s, groupId:%s close", s.config.Topic, s.config.GroupId)
+		log.Info("[Subscriber]topic:%s, groupId:%s close", s.config.Topic, s.config.GroupId)
 	}
 }
 
