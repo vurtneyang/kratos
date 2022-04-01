@@ -17,7 +17,6 @@ type Subscriber struct {
 
 type SubscriberConfig struct {
 	*Config
-	Topic     string
 	GroupName string
 }
 
@@ -52,10 +51,8 @@ func NewSubscriber(c *SubscriberConfig) (s *Subscriber, err error) {
 	return
 }
 
-func (s *Subscriber) Subscribe(handler func(context.Context, ...*primitive.MessageExt) (consumer.ConsumeResult, error)) error {
-	selector := consumer.MessageSelector{}
-
-	err := s.consumer.Subscribe(s.config.Topic, selector, handler)
+func (s *Subscriber) Subscribe(topic string, selector consumer.MessageSelector, handler func(context.Context, ...*primitive.MessageExt) (consumer.ConsumeResult, error)) error {
+	err := s.consumer.Subscribe(topic, selector, handler)
 	if err != nil {
 		return err
 	}
@@ -78,8 +75,8 @@ func (s *Subscriber) Close() {
 	}
 
 	if err != nil {
-		log.Error("[Subscriber]topic:%s, groupName:%s close err:%v", s.config.Topic, s.config.GroupName, err)
+		log.Error("[Subscriber]groupName:%s close err:%v", s.config.GroupName, err)
 	} else {
-		log.Info("[Subscriber]topic:%s, groupName:%s close", s.config.Topic, s.config.GroupName)
+		log.Info("[Subscriber]groupName:%s close", s.config.GroupName)
 	}
 }
