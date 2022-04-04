@@ -1,6 +1,7 @@
 package binding
 
 import (
+	ut "github.com/go-playground/universal-translator"
 	"net/http"
 	"strings"
 
@@ -40,6 +41,9 @@ type StructValidator interface {
 
 	//GetValidate return the default validate
 	GetValidate() *validator.Validate
+
+	//GetTranslator return translator
+	GetTranslator() ut.Translator
 }
 
 // Validator default validator.
