@@ -39,10 +39,10 @@ func (v *defaultValidator) lazyinit() {
 		v.validate = validator.New()
 		v.validate.RegisterTagNameFunc(func(field reflect.StructField) string {
 			zhVal := field.Tag.Get("zh")
-			formVal := field.Tag.Get("form")
 			if zhVal != "" {
 				return zhVal
 			}
+			formVal := field.Tag.Get("form")
 			if formVal != "" {
 				return formVal
 			}
