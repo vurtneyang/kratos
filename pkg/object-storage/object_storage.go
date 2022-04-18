@@ -12,7 +12,9 @@ import (
 )
 
 type Client interface {
-	Put(context.Context, string, io.Reader) error
+	GetUrlPrefix() string                         // 获取图片路径前缀
+	Put(context.Context, string, io.Reader) error // 上传
+	// TODO 一些加水印的图片URL等
 }
 
 // 阿里云OSS
@@ -21,6 +23,7 @@ type OssConfig struct {
 	AccessKeyId     string
 	AccessKeySecret string
 	Bucket          string
+	UrlPrefix       string
 }
 
 type Oss struct {
@@ -56,11 +59,16 @@ func (c *Oss) Put(ctx context.Context, path string, file io.Reader) (err error) 
 	return
 }
 
+func (c *Oss) GetUrlPrefix() string {
+	return c.config.UrlPrefix
+}
+
 // 腾讯云COS
 type CosConfig struct {
 	BucketUrl string
 	SecretId  string
 	SecretKey string
+	UrlPrefix string
 }
 
 type Cos struct {
@@ -99,4 +107,8 @@ func (c *Cos) Put(ctx context.Context, path string, file io.Reader) (err error) 
 	body, _ := ioutil.ReadAll(resp.Body)
 	log.Infoc(ctx, "[cos.Put] upload to cos success, body: %s, path: %s", string(body), path)
 	return
+}
+
+func (c *Cos) GetUrlPrefix() string {
+	return c.config.UrlPrefix
 }
