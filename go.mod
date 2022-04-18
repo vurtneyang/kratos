@@ -7,6 +7,7 @@ require (
 	github.com/HdrHistogram/hdrhistogram-go v1.1.2 // indirect
 	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/aliyun/aliyun-log-go-sdk v0.1.8
+	github.com/aliyun/aliyun-oss-go-sdk v2.2.2+incompatible // indirect
 	github.com/aliyunmq/mq-http-go-sdk v1.0.3
 	github.com/apache/rocketmq-client-go/v2 v2.1.0
 	github.com/aristanetworks/goarista v0.0.0-20211007183212-895f499c075c // indirect
@@ -25,10 +26,12 @@ require (
 	github.com/gogap/stack v0.0.0-20150131034635-fef68dddd4f8 // indirect
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.5.2
+	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/jinzhu/gorm v1.9.16
 	github.com/jinzhu/now v1.1.4 // indirect
 	github.com/magicdvd/nacos-client v0.0.0-20210609122731-160b0bb76754
 	github.com/montanaflynn/stats v0.5.0
+	github.com/mozillazg/go-httpheader v0.3.1 // indirect
 	github.com/nacos-group/nacos-sdk-go v1.0.9
 	github.com/opentracing/opentracing-go v1.1.1-0.20190913142402-a7454ce5950e
 	github.com/openzipkin/zipkin-go v0.2.1
@@ -45,6 +48,7 @@ require (
 	github.com/smallnest/rpcx v1.6.11
 	github.com/stretchr/testify v1.7.0
 	github.com/tencentcloud/tencentcloud-cls-sdk-go v0.0.0-20220107074144-c92bd2517aab
+	github.com/tencentyun/cos-go-sdk-v5 v0.7.34 // indirect
 	github.com/tsuna/gohbase v0.0.0-20190502052937-24ffed0537aa
 	github.com/uber/jaeger-client-go v2.25.0+incompatible
 	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
@@ -54,6 +58,7 @@ require (
 	go.etcd.io/etcd/client/v3 v3.5.0
 	go.uber.org/atomic v1.9.0
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f
+	golang.org/x/time v0.0.0-20220411224347-583f2d630306 // indirect
 	golang.org/x/tools v0.1.6
 	google.golang.org/genproto v0.0.0-20210921142501-181ce0d877f6
 	google.golang.org/grpc v1.40.0

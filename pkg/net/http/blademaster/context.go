@@ -2,6 +2,8 @@ package blademaster
 
 import (
 	"context"
+	"fmt"
+	"github.com/go-playground/validator/v10"
 	"math"
 	"net/http"
 	"strconv"
@@ -390,9 +392,18 @@ func (c *Context) mustBindWith(obj interface{}, b binding.Binding) (err error) {
 	if err = b.Bind(c.Request, obj); err != nil {
 		c.Error = ecode.RequestErr
 		c.ErrorMsg = err.Error()
+		errs, ok := err.(validator.ValidationErrors)
+		var message string
+		if !ok {
+			message = err.Error()
+		} else {
+			for _, v := range errs.Translate(binding.Validator.GetTranslator()) {
+				message += fmt.Sprintf("%s;", v)
+			}
+		}
 		c.Render(http.StatusOK, render.JSON{
 			Code:    ecode.RequestErr.Code(),
-			Message: err.Error(),
+			Message: message,
 			Data:    nil,
 		})
 		c.Abort()
