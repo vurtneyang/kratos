@@ -8,12 +8,19 @@ import (
 	"kratos/pkg/ecode"
 	"kratos/pkg/log"
 	"kratos/pkg/net/metadata"
+
+	"github.com/pkg/errors"
 )
 
 // Logger is logger  middleware
 func Logger() HandlerFunc {
 	const noUser = "no_user"
 	return func(c *Context) {
+		if c.Request.URL.String() == monitorPing {
+			c.Next()
+			return
+		}
+
 		now := time.Now()
 		req := c.Request
 		path := req.URL.Path
@@ -27,6 +34,16 @@ func Logger() HandlerFunc {
 
 		err := c.Error
 		cerr := ecode.Cause(err)
+
+		// cause root error
+		rootErr := errors.Cause(err)
+		rootErrMsg := ""
+		rootStack := ""
+		if rootErr != nil {
+			rootErrMsg = rootErr.Error()
+			rootStack = fmt.Sprintf("%+v", rootErr)
+		}
+
 		dt := time.Since(now)
 		caller := metadata.String(c, metadata.Caller)
 		if caller == "" {
@@ -68,6 +85,10 @@ func Logger() HandlerFunc {
 			log.KVFloat64("timeout_quota", quota),
 			log.KVFloat64("ts", dt.Seconds()),
 			log.KVString("source", "http-access-log"),
+			log.KVString("authorization", req.Header.Get("Authorization")),
+			log.KVString("sign", req.Header.Get("X-Sign")),
+			log.KVString("root_err", rootErrMsg),
+			log.KVString("root_err_stack", rootStack),
 		)
 	}
 }

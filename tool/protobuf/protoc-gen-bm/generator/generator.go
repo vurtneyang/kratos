@@ -115,9 +115,24 @@ func (t *bm) generateImports(file *descriptor.FileDescriptorProto) {
 	t.P(`import (`)
 	//t.P(`	`,t.pkgs["context"], ` "context"`)
 	t.P(`	"context"`)
+
 	t.P()
 	t.P(`	bm "kratos/pkg/net/http/blademaster"`)
 	t.P(`	"kratos/pkg/net/http/blademaster/binding"`)
+
+	comments, err := t.Reg.FileComments(file)
+	if err != nil {
+		t.PrintComments(comments)
+	}
+	tags := tag.GetTagsInComment(comments.Leading)
+	importStr := tag.GetTagValue("import", tags)
+	var pkgs []string
+	if importStr != "" {
+		pkgs = strings.Split(importStr, ",")
+		for _, p := range pkgs {
+			t.P(fmt.Sprintf(`	"%s"`, p))
+		}
+	}
 
 	t.P(`)`)
 	// It's legal to import a message and use it as an input or output for a
@@ -203,6 +218,9 @@ func (t *bm) generateBMRoute(
 			methodName:    method.GetName(),
 		})
 
+		multipartStr := tag.GetTagValue("multipart", tags)
+		downloadStr := tag.GetTagValue("download", tags)
+
 		t.P(fmt.Sprintf("func %s (c *bm.Context) {", routeName))
 		t.P(`	p := new(`, inputType, `)`)
 		requestBinding := ""
@@ -213,7 +231,25 @@ func (t *bm) generateBMRoute(
 			requestBinding + `); err != nil {`)
 		t.P(`		return`)
 		t.P(`	}`)
-		t.P(`	resp, err := `, svcName, `.`, methName, `(c, p)`)
+		if multipartStr != "" {
+			t.P(`	files := c.Request.MultipartForm.File["`, multipartStr,`"]`)
+			t.P(`	resp, err := `, svcName, `.`, methName, `(c, files, p)`)
+		} else if downloadStr != "" {
+			t.P(`	c.Writer.Header().Set("Content-Transfer-Encoding", "binary")`)
+			t.P(`	c.Writer.Header().Set("Content-Type", "application/octet-stream")`)
+			t.P(`	c.Writer.Header().Set("Access-Control-Expose-Headers", "Content-Disposition")`)
+			t.P(`	c.Writer.Header().Set("Content-Disposition", "attachment; filename=default.`, downloadStr, `")`)
+			t.P(`	err := `, svcName, `.`, methName, `(c, p)`)
+			t.P(`	if err != nil {`)
+			t.P(`		c.JSON(nil, err)`)
+			t.P(`		return`)
+			t.P(`	}`)
+			t.P(`}`)
+			t.P(``)
+			continue
+		} else {
+			t.P(`	resp, err := `, svcName, `.`, methName, `(c, p)`)
+		}
 		t.P(`	c.JSON(resp, err)`)
 		t.P(`}`)
 		t.P(``)
@@ -327,8 +363,17 @@ func (t *bm) generateInterfaceMethod(file *descriptor.FileDescriptorProto,
 	}
 
 	respDynamic := tag.GetTagValue("dynamic_resp", tags) == "true"
+	multipartStr := tag.GetTagValue("multipart", tags)
+	downloadStr := tag.GetTagValue("download", tags)
+
 	if respDynamic {
 		t.P(fmt.Sprintf(`	%s(ctx context.Context, req *%s) (resp interface{}, err error)`,
+			methName, inputType))
+	} else if multipartStr != "" {
+		t.P(fmt.Sprintf(`	%s(ctx context.Context, files []*multipart.FileHeader, req *%s) (resp *%s, err error)`,
+			methName, inputType, outputType))
+	} else if downloadStr != "" {
+		t.P(fmt.Sprintf(`	%s(c *bm.Context, req *%s) (err error)`,
 			methName, inputType))
 	} else {
 		t.P(fmt.Sprintf(`	%s(ctx context.Context, req *%s) (resp *%s, err error)`,

@@ -26,7 +26,7 @@ func (r *JaegerReporter) WriteSpan(raw *trace.Span) (err error) {
 	spanID := SpanID(ctx.SpanID)
 	parentID := SpanID(ctx.ParentID)
 	tags := raw.Tags()
-	log.Info("[info] write span")
+	//log.Info("[info] write span")
 	span := &Span{
 		context:       NewSpanContext(traceID, spanID, parentID, true, nil),
 		operationName: raw.OperationName(),
@@ -40,8 +40,9 @@ func (r *JaegerReporter) WriteSpan(raw *trace.Span) (err error) {
 		span.SetTag(t.Key, t.Value)
 	}
 
-	cnt, err := r.transport.Append(span)
-	log.Info("[info] write append cnt:%d, err:%v", cnt, err)
+	if cnt, err := r.transport.Append(span); err != nil {
+		log.Info("[info] write append cnt:%d, traceid:%s, err:%v", cnt, traceID, err)
+	}
 
 	return err
 }
