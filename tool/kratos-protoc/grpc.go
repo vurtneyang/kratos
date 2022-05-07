@@ -37,13 +37,12 @@ func genGRPC(files []string) error {
 		return err
 	}
 
-	i := strings.Index(pwd, "app")
-	cmdDir := filepath.Dir(pwd[:i-1])
+	i := strings.Index(pwd, "api")
+	cmdDir := filepath.Dir(pwd[:i-4])
 	var cmdFiles []string
 	for _ ,file := range files {
 		cmdFiles = append(cmdFiles, fmt.Sprintf("%s/%s", pwd[len(cmdDir)+1:], file))
 	}
-
 	line := fmt.Sprintf(_grpcProtoc, gosrc, ext, pwd)
 	log.Println(line, strings.Join(cmdFiles, " "))
 	args := strings.Split(line, " ")
