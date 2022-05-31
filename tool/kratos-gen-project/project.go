@@ -58,6 +58,15 @@ func create() (err error) {
 		}
 	}
 
+	if err = download(); err != nil {
+		return
+	}
+	if err = generate("api/client.go"); err != nil {
+		return
+	}
+	if err = download(); err != nil {
+		return
+	}
 	if err = generate("./..."); err != nil {
 		return
 	}
@@ -65,6 +74,14 @@ func create() (err error) {
 		return
 	}
 	return
+}
+
+func download() error {
+	cmd := exec.Command("go", "mod", "tidy")
+	cmd.Dir = p.path
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }
 
 func generate(path string) error {
