@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"unicode/utf8"
 )
 
 var (
@@ -52,4 +53,16 @@ func SplitInts(s string) ([]int64, error) {
 		res = append(res, i)
 	}
 	return res, nil
+}
+
+// InterceptFristNChar 判断字符串是否超过n个字符，如果超过返回前n-3个字符加上...
+func InterceptFristNChar(in string, n int) (out string) {
+	if utf8.RuneCountInString(in) <= n {
+		out = in
+		return
+	}
+	rs := []rune(in)
+	rs = rs[:n-3]
+	out = string(rs) + "..."
+	return
 }
