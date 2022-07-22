@@ -2,37 +2,29 @@ package dao
 
 import (
 	"context"
-	"time"
 
-	"kratos/pkg/cache/memcache"
-	"kratos/pkg/cache/redis"
 	"kratos/pkg/cache/xredis"
 	"kratos/pkg/conf/paladin"
-	"kratos/pkg/sync/pipeline/fanout"
 	xtime "kratos/pkg/time"
 
 	"github.com/google/wire"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
-var Provider = wire.NewSet(New, NewDB, NewRedis, NewMC)
+var Provider = wire.NewSet(New, NewDB, NewRedis)
 
 // dao dao.
 type Dao struct {
 	db          *gorm.DB
-	redis       *redis.Redis
 	XRedis     *xredis.Client
-	mc          *memcache.Memcache
-	cache *fanout.Fanout
-	demoExpire int32
 }
 
 // New new a dao and return.
-func New(r *redis.Redis, mc *memcache.Memcache, db *gorm.DB) (d *Dao, cf func(), err error) {
-	return newDao(r, mc, db)
+func New(r *xredis.Client, db *gorm.DB) (d *Dao, cf func(), err error) {
+	return newDao(r, db)
 }
 
-func newDao(r *redis.Redis, mc *memcache.Memcache, db *gorm.DB) (d *Dao, cf func(), err error) {
+func newDao(r *xredis.Client, db *gorm.DB) (d *Dao, cf func(), err error) {
 	var cfg struct{
 		DemoExpire xtime.Duration
 	}
@@ -41,13 +33,10 @@ func newDao(r *redis.Redis, mc *memcache.Memcache, db *gorm.DB) (d *Dao, cf func
 	}
 	d = &Dao{
 		db: db,
-		redis: r,
-		mc: mc,
-		cache: fanout.New("cache"),
-		demoExpire: int32(time.Duration(cfg.DemoExpire) / time.Second),
+		XRedis: r,
 	}
 	var (
-		rCfg redis.Config
+		rCfg xredis.Config
 		ct   paladin.Map
 	)
 	if err = paladin.Get("redis.toml").Unmarshal(&ct); err != nil {
@@ -65,7 +54,7 @@ func newDao(r *redis.Redis, mc *memcache.Memcache, db *gorm.DB) (d *Dao, cf func
 
 // Close close the resource.
 func (d *Dao) Close() {
-	d.cache.Close()
+
 }
 
 // Ping ping the resource.

@@ -15,20 +15,12 @@ package demo.service.v1;
 option go_package = "api";
 option (gogoproto.goproto_getters_all) = false;
 
-service Demo {
-  rpc Ping(.google.protobuf.Empty) returns (.google.protobuf.Empty);
-  rpc SayHello(HelloReq) returns (.google.protobuf.Empty);
-  rpc SayHelloURL(HelloReq) returns (HelloResp) {
+service Monitor {
+  rpc Ping(.google.protobuf.Empty) returns (.google.protobuf.Empty){
     option (google.api.http) = {
-      get: "/demo/say_hello"
+      get: "/monitor/ping"
     };
   };
 }
 
-message HelloReq {
-  string name = 1 [(gogoproto.moretags) = 'form:"name" validate:"required"'];
-}
 
-message HelloResp {
-  string Content = 1 [(gogoproto.jsontag) = 'content'];
-}

@@ -9,5 +9,5 @@ import (
 
 //go:generate kratos tool wire
 func newTestDao() (*dao, func(), error) {
-	panic(wire.Build(newDao, NewDB, NewRedis, NewMC))
+	panic(wire.Build(newDao, NewDB, NewRedis))
 }
