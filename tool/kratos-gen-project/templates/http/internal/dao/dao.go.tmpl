@@ -8,10 +8,9 @@ import (
 	xtime "kratos/pkg/time"
 
 	"github.com/google/wire"
-	"gorm.io/gorm"
 )
 
-var Provider = wire.NewSet(New, NewDB, NewRedis)
+var Provider = wire.NewSet(New, NewRedis)
 
 // dao dao.
 type Dao struct {
