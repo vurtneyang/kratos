@@ -2,16 +2,15 @@ package dao
 
 import (
 	"context"
-	"kratos/pkg/cache/xredis"
 
-	"kratos/pkg/cache/redis"
+	"kratos/pkg/cache/xredis"
 	"kratos/pkg/conf/paladin"
 	"kratos/pkg/log"
 )
 
 func NewRedis() (r *xredis.Client, cf func(), err error) {
 	var (
-		cfg redis.Config
+		cfg xredis.Config
 		ct  paladin.Map
 	)
 	if err = paladin.Get("redis.toml").Unmarshal(&ct); err != nil {
@@ -20,6 +19,7 @@ func NewRedis() (r *xredis.Client, cf func(), err error) {
 	if err = ct.Get("Client").UnmarshalTOML(&cfg); err != nil {
 		return
 	}
+
 	r = xredis.New(&cfg)
 	cf = func() { r.Close() }
 	return
@@ -28,8 +28,7 @@ func NewRedis() (r *xredis.Client, cf func(), err error) {
 func (d *Dao) PingRedis(ctx context.Context) (err error) {
 	err = d.XRedis.Ping(ctx).Err()
 	if err != nil {
-		log.Errorc(ctx, "conn.Set(PING) error(%v)", err)
+		log.Error("conn.Set(PING) error(%v)", err)
 	}
-
 	return
 }

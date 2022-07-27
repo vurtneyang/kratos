@@ -1,16 +1,16 @@
 module {{.Name}}
 
-go 1.16
+go 1.17
 
 require (
-	github.com/golang/protobuf v1.5.2
-	github.com/google/wire v0.5.0
-	github.com/jinzhu/gorm v1.9.16
-	google.golang.org/grpc v1.40.0
-	kratos v1.1.21
+    github.com/gogo/protobuf v1.2.1
+   	github.com/golang/protobuf v1.3.2
+   	golang.org/x/net v0.0.0-20190628185345-da137c7871d7
+   	google.golang.org/grpc v1.28.1
+   	kratos v1.1.18
 )
 
-replace kratos => github.com/vurtneyang/kratos v1.1.21
+replace kratos => github.com/vurtneyang/kratos v1.1.18
 
 replace google.golang.org/grpc => google.golang.org/grpc v1.36.0
 

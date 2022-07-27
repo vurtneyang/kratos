@@ -7,11 +7,12 @@ import (
 	"{{.ModPrefix}}{{.Name}}/internal/dao"
 	"{{.ModPrefix}}{{.Name}}/internal/service"
 	"{{.ModPrefix}}{{.Name}}/internal/server/grpc"
+	"{{.ModPrefix}}{{.Name}}/internal/server/http"
 
 	"github.com/google/wire"
 )
 
-//go:generate kratos t wire
+//go:generate kratos tool wire
 func InitApp() (*App, func(), error) {
-	panic(wire.Build(dao.Provider, service.Provider, grpc.New, NewApp))
+	panic(wire.Build(dao.Provider, service.Provider, http.New, grpc.New, NewApp))
 }

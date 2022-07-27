@@ -4,7 +4,7 @@ import (
 	"kratos/pkg/conf/paladin"
 	"kratos/pkg/database/orm"
 
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 func NewDB() (db *gorm.DB, cf func(), err error) {
@@ -18,7 +18,8 @@ func NewDB() (db *gorm.DB, cf func(), err error) {
 	if err = ct.Get("Client").UnmarshalTOML(&cfg); err != nil {
 		return
 	}
-	db = orm.NewMySQL(&cfg)
-	cf = func() {db.Close()}
+	db = orm.NewMySqlV2(&cfg)
+
+    cf = func() {}
 	return
 }

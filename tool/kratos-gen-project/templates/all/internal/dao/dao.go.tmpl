@@ -2,32 +2,60 @@ package dao
 
 import (
 	"context"
-	"github.com/google/wire"
-	"github.com/jinzhu/gorm"
+
 	"kratos/pkg/cache/xredis"
+	"kratos/pkg/conf/paladin"
+	xtime "kratos/pkg/time"
+
+	"github.com/google/wire"
+	"gorm.io/gorm"
 )
 
 var Provider = wire.NewSet(New, NewDB, NewRedis)
 
 // dao dao.
 type Dao struct {
-	db     *gorm.DB
-	XRedis *xredis.Client
+	db          *gorm.DB
+	XRedis     *xredis.Client
 }
 
 // New new a dao and return.
 func New(r *xredis.Client, db *gorm.DB) (d *Dao, cf func(), err error) {
-	d = &Dao{
-		XRedis: r,
-		db:     db,
+	return newDao(r, db)
+}
+
+func newDao(r *xredis.Client, db *gorm.DB) (d *Dao, cf func(), err error) {
+	var cfg struct{
+		DemoExpire xtime.Duration
 	}
+	if err = paladin.Get("application.toml").UnmarshalTOML(&cfg); err != nil {
+		return
+	}
+	d = &Dao{
+		db: db,
+		XRedis: r,
+	}
+	var (
+		rCfg xredis.Config
+		ct   paladin.Map
+	)
+	if err = paladin.Get("redis.toml").Unmarshal(&ct); err != nil {
+		return
+	}
+	if err = ct.Get("Client").UnmarshalTOML(&rCfg); err != nil {
+		return
+	}
+
+	d.XRedis = xredis.New(&rCfg)
 
 	cf = d.Close
 	return
 }
 
 // Close close the resource.
-func (d *Dao) Close() {}
+func (d *Dao) Close() {
+
+}
 
 // Ping ping the resource.
 func (d *Dao) Ping(ctx context.Context) (err error) {

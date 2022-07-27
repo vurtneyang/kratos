@@ -2,68 +2,62 @@ package dao
 
 import (
 	"context"
-	"time"
 
-	"{{.ModPrefix}}{{.Name}}/internal/model"
-	"kratos/pkg/cache/memcache"
-	"kratos/pkg/cache/redis"
+	"kratos/pkg/cache/xredis"
 	"kratos/pkg/conf/paladin"
-	"kratos/pkg/database/sql"
-	"kratos/pkg/sync/pipeline/fanout"
 	xtime "kratos/pkg/time"
 
 	"github.com/google/wire"
+	"gorm.io/gorm"
 )
 
-var Provider = wire.NewSet(New, NewDB, NewRedis, NewMC)
-
-//go:generate kratos tool genbts
-// Dao dao interface
-type Dao interface {
-	Close()
-	Ping(ctx context.Context) (err error)
-	// bts: -nullcache=&model.Article{ID:-1} -check_null_code=$!=nil&&$.ID==-1
-	RawArticle(c context.Context, id int64) (*model.Article, error)
-}
+var Provider = wire.NewSet(New, NewDB, NewRedis)
 
 // dao dao.
-type dao struct {
-	db          *sql.DB
-	redis       *redis.Redis
-	mc          *memcache.Memcache
-	cache *fanout.Fanout
-	demoExpire int32
+type Dao struct {
+	db          *gorm.DB
+	XRedis     *xredis.Client
 }
 
 // New new a dao and return.
-func New(r *redis.Redis, mc *memcache.Memcache, db *sql.DB) (d Dao, cf func(), err error) {
-	return newDao(r, mc, db)
+func New(r *xredis.Client, db *gorm.DB) (d *Dao, cf func(), err error) {
+	return newDao(r, db)
 }
 
-func newDao(r *redis.Redis, mc *memcache.Memcache, db *sql.DB) (d *dao, cf func(), err error) {
+func newDao(r *xredis.Client, db *gorm.DB) (d *Dao, cf func(), err error) {
 	var cfg struct{
 		DemoExpire xtime.Duration
 	}
 	if err = paladin.Get("application.toml").UnmarshalTOML(&cfg); err != nil {
 		return
 	}
-	d = &dao{
+	d = &Dao{
 		db: db,
-		redis: r,
-		mc: mc,
-		cache: fanout.New("cache"),
-		demoExpire: int32(time.Duration(cfg.DemoExpire) / time.Second),
+		XRedis: r,
 	}
+	var (
+		rCfg xredis.Config
+		ct   paladin.Map
+	)
+	if err = paladin.Get("redis.toml").Unmarshal(&ct); err != nil {
+		return
+	}
+	if err = ct.Get("Client").UnmarshalTOML(&rCfg); err != nil {
+		return
+	}
+
+	d.XRedis = xredis.New(&rCfg)
+
 	cf = d.Close
 	return
 }
 
 // Close close the resource.
-func (d *dao) Close() {
-	d.cache.Close()
+func (d *Dao) Close() {
+
 }
 
 // Ping ping the resource.
-func (d *dao) Ping(ctx context.Context) (err error) {
+func (d *Dao) Ping(ctx context.Context) (err error) {
 	return nil
 }

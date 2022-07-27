@@ -1,20 +1,16 @@
 package api
-
 import (
 	"context"
-	"fmt"
-	"kratos/pkg/net/rpc/warden"
+	"os"
 
+	"kratos/pkg/log"
 	"kratos/pkg/conf/paladin"
-	"kratos/pkg/naming/nacos"
-	"kratos/pkg/naming/nacosgrpc"
-	"kratos/pkg/naming/nacosgrpc/balancer/weightedroundrobin"
-
+	"kratos/pkg/net/rpc/warden"
 	"google.golang.org/grpc"
 )
 
 // AppID .
-const AppID = "{{.ModPrefix}}{{.Name}}"
+const AppID = "{{.Name}}"
 
 type Client struct {
 	MonitorClient MonitorClient
@@ -22,36 +18,38 @@ type Client struct {
 
 }
 
+var grpcDns struct {
+	GrpcPort string `json:"grpc_port" toml:"{{.Name}}_grpc"`
+}
+
 // NewClient new grpc client
-func NewClient() (*Client, error) {
-	cfg := nacos.RpcxConf{}
+func NewClient(cfg *warden.ClientConfig, opts ...grpc.DialOption) (*Client, error) {
+	client := warden.NewClient(cfg, opts...)
+
+	cfg := &grpcDns
 	err := paladin.Get("nacos.toml").UnmarshalTOML(&cfg)
 	if err != nil {
-		return nil, err
+		log.Error("[Dao.New] UnmarshalToml err:%v", err)
+		return cli, err
 	}
+	if cfg.GrpcPort == "" {
+    		cfg.GrpcPort = os.Getenv("{{.Name}}-GRPC")
+    }
 
-	client := warden.NewClient(nil)
-	conn, err := client.Dial(context.Background(),
-		nacosgrpc.Target(
-			fmt.Sprintf("http://nacos:nacos@%s:8848/nacos", cfg.NacosServer.IpAddr),
-			"",
-			"DEFAULT_GROUP",
-			AppID,
-		),
-		grpc.WithDefaultServiceConfig(
-			fmt.Sprintf(`{"LoadBalancingPolicy": "%s"}`, weightedroundrobin.Name),
-		),
-	)
-	if err != nil {
-		return nil, err
-	}
+	clientCfg.AuthGrpc = "direct://default/" + clientCfg.GrpcPort
 
-	cli := &Client{}
+    log.Info("Get {{.Name}} grpc_addr:%s", clientCfg.GrpcPort)
+    // todo 沿用薄荷的k8sDNS设计，后期改成服务注册和服务发现。
+    conn, err := client.Dial(context.Background(), clientCfg.GrpcPort)
+    if err != nil {
+    	log.Error("[grpc.client] {{.Name}} grpc new client,err:%v", err)
+    }
+    cli := &Client{}
+
 	cli.MonitorClient = NewMonitorClient(conn)
-	/************ Add Client ***************/
+    /************ Add Client ***************/
 
 	return cli, err
 }
-
 // 生成 gRPC 代码
 //go:generate kratos tool protoc --grpc --bm api.proto

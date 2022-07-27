@@ -9,15 +9,26 @@ import (
 
 	"{{.ModPrefix}}{{.Name}}/internal/di"
 	"kratos/pkg/conf/paladin"
+	"kratos/pkg/net/trace"
 	"kratos/pkg/log"
+
 )
 
 func main() {
 	flag.Parse()
-	log.Init(nil) // debug flag: log.dir={path}
+	paladin.Init()
+	slsConf := log.NewSLSCfg()
+    sls, err := log.NewAliSLS(slsConf)
+    if err != nil {
+    	panic(err)
+    }
+    logConf := &log.Config{Stdout: false}
+    log.Init(logConf, sls) // debug flag: log.dir={path}
 	defer log.Close()
 	log.Info("{{.Name}} start")
-	paladin.Init()
+
+    trace.Init(nil)
+    defer trace.Close()
 	_, closeFunc, err := di.InitApp()
 	if err != nil {
 		panic(err)

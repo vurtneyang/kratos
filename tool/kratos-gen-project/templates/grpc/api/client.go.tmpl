@@ -1,25 +1,55 @@
 package api
 import (
 	"context"
-	"fmt"
+	"os"
 
+    "kratos/pkg/log"
+    "kratos/pkg/conf/paladin"
 	"kratos/pkg/net/rpc/warden"
-
 	"google.golang.org/grpc"
 )
 
 // AppID .
-const AppID = "TODO: ADD APP ID"
+const AppID = "{{.Name}}"
 
-// NewClient new grpc client
-func NewClient(cfg *warden.ClientConfig, opts ...grpc.DialOption) (DemoClient, error) {
-	client := warden.NewClient(cfg, opts...)
-	cc, err := client.Dial(context.Background(), fmt.Sprintf("discovery://default/%s", AppID))
-	if err != nil {
-		return nil, err
-	}
-	return NewDemoClient(cc), nil
+type Client struct {
+	MonitorClient MonitorClient
+	/*********  Add Grpc Client *************/
+
 }
 
+var grpcDns struct {
+	GrpcPort string `json:"grpc_port" toml:"{{.Name}}_grpc"`
+}
+
+// NewClient new grpc client
+func NewClient(cfg *warden.ClientConfig, opts ...grpc.DialOption) (*Client, error) {
+	client := warden.NewClient(cfg, opts...)
+
+	cfg := &grpcDns
+	err := paladin.Get("nacos.toml").UnmarshalTOML(&cfg)
+	if err != nil {
+		log.Error("[Dao.New] UnmarshalToml err:%v", err)
+		return cli, err
+	}
+	if cfg.GrpcPort == "" {
+    		cfg.GrpcPort = os.Getenv("{{.Name}}-GRPC")
+    }
+
+	clientCfg.AuthGrpc = "direct://default/" + clientCfg.GrpcPort
+
+    log.Info("Get {{.Name}} grpc_addr:%s", clientCfg.GrpcPort)
+    // todo 沿用薄荷的k8sDNS设计，后期改成服务注册和服务发现。
+    conn, err := client.Dial(context.Background(), clientCfg.GrpcPort)
+    if err != nil {
+    	log.Error("[grpc.client] {{.Name}} grpc new client,err:%v", err)
+    }
+    cli := &Client{}
+
+	cli.MonitorClient = NewMonitorClient(conn)
+    /************ Add Client ***************/
+
+	return cli, err
+}
 // 生成 gRPC 代码
-//go:generate kratos tool protoc --grpc api.proto
+//go:generate kratos tool protoc --grpc --bm api.proto
