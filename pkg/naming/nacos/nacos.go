@@ -21,7 +21,6 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/common/constant"
 	"github.com/nacos-group/nacos-sdk-go/model"
 	"github.com/nacos-group/nacos-sdk-go/vo"
-	nclient "github.com/rpcxio/rpcx-nacos/client"
 	"github.com/smallnest/rpcx/client"
 )
 
@@ -101,79 +100,6 @@ type watcher struct {
 type Registry struct {
 	opts options
 	cli  naming_client.INamingClient
-}
-
-func NewRpcxDao(cluster, groupName, serverName string) (dao *RpcXDao, err error) {
-	if groupName == "" {
-		groupName = DefaultGroupName
-	}
-	if cluster == "" {
-		cluster = DefaultClusterName
-	}
-	dao = &RpcXDao{}
-	cfg := RpcxConf{}
-	err = paladin.Get("nacos.toml").UnmarshalTOML(&cfg)
-	if err != nil {
-		log.Error("[Dao.New] UnmarshalToml err:%v", err)
-		return dao, err
-	}
-	if cfg.Timeout <= 0 {
-		cfg.Timeout = xtime.Duration(time.Millisecond * 500)
-	}
-	dao.Conf = &cfg
-	// New RpcClients
-	dao.Client, err = newClient(dao.Conf, cluster, groupName, serverName)
-	if err != nil {
-		log.Error("New Dao newClient err:%v", err)
-		return dao, err
-	}
-	return dao, err
-}
-
-func newClient(conf *RpcxConf, cluster, groupName, serverName string) (c client.XClient, err error) {
-	if groupName == "" {
-		groupName = DefaultGroupName
-	}
-	if cluster == "" {
-		cluster = DefaultClusterName
-	}
-	serverConfig := []constant.ServerConfig{{
-		IpAddr: conf.NacosServer.IpAddr,
-		Port:   conf.NacosServer.Port,
-	}}
-	if conf.NacosServer.IpAddr2 != "" { // 兼容rpcx的过渡期，考虑到不一样的nacos配置
-		serverConfig[0].IpAddr = conf.NacosServer.IpAddr2
-	}
-
-	clientConfig := constant.ClientConfig{
-		TimeoutMs:            conf.NacosClient.TimeOutMs,
-		BeatInterval:         conf.NacosClient.BeatInterval,
-		NamespaceId:          conf.NacosClient.NameSpaceId,
-		CacheDir:             conf.NacosClient.CacheDir,
-		LogDir:               conf.NacosClient.LogDir,
-		UpdateThreadNum:      conf.NacosClient.UpdateThreadNum,
-		NotLoadCacheAtStart:  conf.NacosClient.NotLoadCacheAtStart,
-		UpdateCacheWhenEmpty: conf.NacosClient.UpdateCacheWhenEmpty,
-	}
-
-	// cluster 按照业务方定义的名称
-	//cluster := conf.NacosServer.NameSpaceId + "_" + serverName
-	log.Info("serverConfig:%v", serverConfig)
-	log.Info("clientConfig:%v", clientConfig)
-	log.Info("cluster:%v", cluster)
-
-	discovery, err := nclient.NewNacosDiscovery(serverName, cluster, groupName, clientConfig, serverConfig)
-	if err != nil {
-		log.Debug("Discovery err:%v", err)
-		return nil, err
-	}
-	//
-	c = client.NewXClient(serverName, client.Failover, client.RandomSelect, discovery, client.DefaultOption)
-	c.Auth(conf.NacosServer.NameSpaceId)
-	pc := c.GetPlugins()
-	pc.Add(&TracePlugin{})
-	c.SetPlugins(pc)
-	return c, err
 }
 
 // 将服务注册到nacos中
