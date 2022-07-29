@@ -18,33 +18,33 @@ type Client struct {
 
 }
 
-var grpcDns struct {
+type grpcDns struct {
 	GrpcPort string `json:"grpc_port" toml:"{{.Name}}_grpc"`
 }
 
 // NewClient new grpc client
 func NewClient(cfg *warden.ClientConfig, opts ...grpc.DialOption) (*Client, error) {
 	client := warden.NewClient(cfg, opts...)
+	cli := &Client{}
 
-	cfg := &grpcDns
-	err := paladin.Get("nacos.toml").UnmarshalTOML(&cfg)
+	clientCfg := &grpcDns{}
+	err := paladin.Get("application.toml").UnmarshalTOML(&cfg)
 	if err != nil {
 		log.Error("[Dao.New] UnmarshalToml err:%v", err)
-		return cli, err
 	}
-	if cfg.GrpcPort == "" {
-    		cfg.GrpcPort = os.Getenv("{{.Name}}-GRPC")
+	if clientCfg.GrpcPort == "" {
+    		clientCfg.GrpcPort = os.Getenv("{{.Name}}-GRPC")
     }
 
-	clientCfg.AuthGrpc = "direct://default/" + clientCfg.GrpcPort
+	clientCfg.GrpcPort = "direct://default/" + clientCfg.GrpcPort
 
     log.Info("Get {{.Name}} grpc_addr:%s", clientCfg.GrpcPort)
     // todo 沿用薄荷的k8sDNS设计，后期改成服务注册和服务发现。
     conn, err := client.Dial(context.Background(), clientCfg.GrpcPort)
     if err != nil {
     	log.Error("[grpc.client] {{.Name}} grpc new client,err:%v", err)
+    	panic(err)
     }
-    cli := &Client{}
 
 	cli.MonitorClient = NewMonitorClient(conn)
     /************ Add Client ***************/
