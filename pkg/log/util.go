@@ -29,10 +29,13 @@ func addExtraField(ctx context.Context, fields map[string]interface{}) {
 	if cluster := metadata.String(ctx, metadata.Cluster); cluster != "" {
 		fields[_cluster] = cluster
 	}
-	if mid:=metadata.Int64(ctx,metadata.Mid);mid != 0 {
+	if mid := metadata.Int64(ctx, metadata.Mid); mid != 0 {
 		fields[_uid] = mid
 	}
-	
+	if uk := metadata.String(ctx, metadata.Uk); uk != "" {
+		fields[_uk] = uk
+	}
+
 	fields[_deplyEnv] = env.DeployEnv
 	fields[_zone] = env.Zone
 	fields[_appID] = c.Family

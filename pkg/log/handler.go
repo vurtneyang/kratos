@@ -46,6 +46,8 @@ const (
 	_cluster = "cluster"
 	// uid
 	_uid = "uid"
+	// uk
+	_uk = "uk"
 )
 
 // Handler is used to handle log events, outputting them to
