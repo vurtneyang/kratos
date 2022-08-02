@@ -30,6 +30,7 @@ const (
 
 	// Mid 外网账户用户id
 	Mid = "mid" // NOTE: ！！！业务可重新修改key名！！！
+	Uk  = "uk"  // 业务中使用的user_key
 
 	// Device 客户端信息
 	Device = "device"
