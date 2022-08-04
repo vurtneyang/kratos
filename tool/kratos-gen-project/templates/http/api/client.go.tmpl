@@ -28,7 +28,7 @@ func NewClient(cfg *warden.ClientConfig, opts ...grpc.DialOption) (*Client, erro
 	cli := &Client{}
 
 	clientCfg := &grpcDns{}
-	err := paladin.Get("application.toml").UnmarshalTOML(&cfg)
+	err := paladin.Get("application.toml").UnmarshalTOML(&clientCfg)
 	if err != nil {
 		log.Error("[Dao.New] UnmarshalToml err:%v", err)
 	}
