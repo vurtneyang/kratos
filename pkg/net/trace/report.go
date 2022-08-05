@@ -108,7 +108,7 @@ func (c *connReport) Close() error {
 func (c *connReport) send(data []byte) {
 	if c.conn == nil {
 		if err := c.reconnect(); err != nil {
-			c.Errorf("connect error: %s retry after second", err)
+			//c.Errorf("connect error: %s retry after second", err)
 			time.Sleep(time.Second)
 			return
 		}
