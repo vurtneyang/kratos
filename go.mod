@@ -2,6 +2,8 @@ module kratos
 
 go 1.17
 
+replace google.golang.org/grpc => google.golang.org/grpc v1.29.1
+
 require (
 	github.com/BurntSushi/toml v1.2.0
 	github.com/aliyun/aliyun-log-go-sdk v0.1.37
@@ -30,7 +32,6 @@ require (
 	github.com/philchia/agollo/v4 v4.1.4
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.12.2
-	github.com/rpcxio/rpcx-nacos v0.0.0-20220327105555-9ed88c3146d4
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/siddontang/go v0.0.0-20180604090527-bdc77568d726
 	github.com/sirupsen/logrus v1.9.0
@@ -130,7 +131,6 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/mozillazg/go-httpheader v0.2.1 // indirect
-	github.com/nacos-group/nacos-sdk-go/v2 v2.0.1 // indirect
 	github.com/nxadm/tail v1.4.8 // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
