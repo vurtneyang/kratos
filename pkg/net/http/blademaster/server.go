@@ -25,7 +25,7 @@ import (
 
 const (
 	defaultMaxMemory = 32 << 20 // 32 MB
-	monitorPing = "/monitor/ping"
+	monitorPing      = "/monitor/ping"
 )
 
 var (
@@ -315,6 +315,7 @@ func (engine *Engine) handleContext(c *Context) {
 		metadata.RemoteIP:    remoteIP(req),
 		metadata.RemotePort:  remotePort(req),
 		metadata.Criticality: string(criticality.Critical),
+		metadata.Device:      DeviceInfo(req),
 	}
 	parseMetadataTo(req, md)
 	ctx := metadata.NewContext(context.Background(), md)
