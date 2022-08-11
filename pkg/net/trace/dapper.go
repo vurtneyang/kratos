@@ -163,7 +163,7 @@ func (d *dapper) Close() error {
 func (d *dapper) report(sp *Span) {
 	if sp.context.isSampled() {
 		if err := d.reporter.WriteSpan(sp); err != nil {
-			d.stdlog.Printf("marshal trace span error: %s", err)
+			//d.stdlog.Printf("marshal trace span error: %s", err)
 		}
 	}
 	d.putSpan(sp)
