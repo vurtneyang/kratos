@@ -239,7 +239,7 @@ func NewNameClient() (c naming_client.INamingClient, err error) {
 		panic("Get env:NACOS_SERVERS error")
 	}
 	serverConfig := make([]constant.ServerConfig, 0)
-	ss := strings.Split(NacosServer, "")
+	ss := strings.Split(NacosServer, " ")
 	for _, v := range ss {
 		c := strings.Split(v, ":")
 		addr := c[0]
