@@ -2,6 +2,7 @@ package nacosgrpc
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"time"
 )
@@ -75,13 +76,28 @@ func OptionModeSubscribe() Option {
 	}
 }
 
-func Target(nacosAddr string, cluster, groupName, serviceName string, ops ...Option) string {
+func Target(cluster, groupName, serviceName string, ops ...Option) string {
 	if groupName == "" {
 		groupName = DefaultGroupName
 	}
 	if cluster == "" {
 		cluster = DefaultClusterName
 	}
+
+	// 变更注册方式
+	NacosServer := os.Getenv("NACOS_SERVERS")
+	if NacosServer == "" {
+		panic("Get env:NACOS_SERVERS error")
+	}
+	addStr := "nacos://"
+	ns := strings.Split(NacosServer, " ")
+	for i, v := range ns {
+		if i != 0 {
+			addStr += ","
+		}
+		addStr = addStr + v
+	}
+
 	opts := &options{
 		groupName:   groupName,
 		clusters:    cluster,
@@ -92,13 +108,8 @@ func Target(nacosAddr string, cluster, groupName, serviceName string, ops ...Opt
 	for _, v := range ops {
 		v.apply(opts)
 	}
-	tmp := nacosAddr
-	if strings.HasPrefix(nacosAddr, "https://") {
-		tmp = "nacoss://" + nacosAddr[8:]
-	} else if strings.HasPrefix(nacosAddr, "http://") {
-		tmp = "nacos://" + nacosAddr[7:]
-	}
-	str := fmt.Sprintf("%s?s=%s&n=%s&cs=%s&g=%s&m=%s&d=%d", tmp, serviceName, opts.nameSpaceID, opts.clusters, opts.groupName, opts.mode, opts.hbInterval/time.Millisecond)
+
+	str := fmt.Sprintf("%s?s=%s&n=%s&cs=%s&g=%s&m=%s&d=%d", addStr, serviceName, opts.nameSpaceID, opts.clusters, opts.groupName, opts.mode, opts.hbInterval/time.Millisecond)
 
 	return str
 }
