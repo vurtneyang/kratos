@@ -115,13 +115,15 @@ func NewContext(ctx context.Context) context.Context {
 }
 
 // 将服务注册到nacos中
-func RegisterNacos(cluster, groupName, serverName string) error {
+func RegisterNacos() error {
+	cluster, groupName, serverName := "", os.Getenv("APP_GROUP"), os.Getenv("APP_ID")
 	if groupName == "" {
 		groupName = DefaultGroupName
 	}
 	if cluster == "" {
 		cluster = DefaultClusterName
 	}
+
 	client, err := NewNameClient()
 	if err != nil {
 		return err
@@ -145,7 +147,8 @@ func RegisterNacos(cluster, groupName, serverName string) error {
 }
 
 // 将服务从nacos中注销
-func DeregisterNacos(cluster, groupName, serverName string) error {
+func DeregisterNacos() error {
+	cluster, groupName, serverName := "", os.Getenv("APP_GROUP"), os.Getenv("APP_ID")
 	if groupName == "" {
 		groupName = DefaultGroupName
 	}
