@@ -243,7 +243,10 @@ func NewNameClient() (c naming_client.INamingClient, err error) {
 	for _, v := range ss {
 		c := strings.Split(v, ":")
 		addr := c[0]
-		port, _ := strconv.Atoi(c[1])
+		port := 8848
+		if len(c) > 1 {
+			port, _ = strconv.Atoi(c[1])
+		}
 		serverConfig = append(serverConfig, constant.ServerConfig{
 			IpAddr: addr,
 			Port:   uint64(port),
