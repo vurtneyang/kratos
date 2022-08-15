@@ -91,12 +91,7 @@ func Target(cluster, groupName, serviceName string, ops ...Option) string {
 	}
 	addStr := "nacos://"
 	ns := strings.Split(NacosServer, " ")
-	for i, v := range ns {
-		if i != 0 {
-			addStr += ","
-		}
-		addStr = addStr + v
-	}
+	addStr = addStr + ns[0] + "/nacos"
 
 	opts := &options{
 		groupName:   groupName,
