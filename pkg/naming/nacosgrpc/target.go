@@ -87,7 +87,8 @@ func Target(cluster, groupName, serviceName string, ops ...Option) string {
 	// 变更注册方式
 	NacosServer := os.Getenv("NACOS_SERVERS")
 	if NacosServer == "" {
-		panic("Get env:NACOS_SERVERS error")
+		fmt.Println("Get env:NACOS_SERVERS error")
+		return ""
 	}
 	addStr := "nacos://"
 	ns := strings.Split(NacosServer, " ")
