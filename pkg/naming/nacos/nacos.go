@@ -5,16 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
+	"os"
 	"strconv"
 	"strings"
 	"time"
 
 	xtime "kratos/pkg/time"
-
-	"kratos/pkg/conf/paladin"
-	"kratos/pkg/log"
-	bm "kratos/pkg/net/http/blademaster"
-	"kratos/pkg/net/rpc/warden"
 
 	"github.com/nacos-group/nacos-sdk-go/clients"
 	"github.com/nacos-group/nacos-sdk-go/clients/naming_client"
@@ -22,15 +18,17 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/model"
 	"github.com/nacos-group/nacos-sdk-go/vo"
 	"github.com/smallnest/rpcx/client"
+	"kratos/pkg/log"
 )
 
 const (
-	DefaultClusterName = "DEFAULT"
-	DefaultGroupName   = "DEFAULT_GROUP"
-	DefaultNameSpaceID = "public"
-
-	modeHeartBeat string = "hb"
-	modeSubscribe string = "sb"
+	DefaultClusterName        = "DEFAULT"
+	DefaultGroupName          = "DEFAULT_GROUP"
+	DefaultNameSpaceID        = "public"
+	DefaultGrpcPort           = "7883"
+	DefaultHttpPort           = "3000"
+	modeHeartBeat      string = "hb"
+	modeSubscribe      string = "sb"
 )
 
 type Option interface {
@@ -47,7 +45,6 @@ type options struct {
 
 // Dao dao
 type RpcXDao struct {
-	Conf   *RpcxConf      // 配置文件
 	Client client.XClient // Rpcx连接池
 }
 
@@ -79,7 +76,7 @@ type NacosClientConf struct {
 	UpdateCacheWhenEmpty bool   `json:"updateCacheWhenEmpty"`
 }
 
-type RpcxConf struct {
+type NacosConf struct {
 	Server      *ServerConf
 	NacosServer *NacosServerConf
 	NacosClient *NacosClientConf
@@ -100,6 +97,21 @@ type watcher struct {
 type Registry struct {
 	opts options
 	cli  naming_client.INamingClient
+}
+
+type nacosKey string
+
+var _nacosKey nacosKey = "kratos/pkg/naming/nacos/time"
+
+// FromContext returns the trace bound to the context, if any.
+func FromContext(ctx context.Context) (t time.Time, ok bool) {
+	t, ok = ctx.Value(_nacosKey).(time.Time)
+	return
+}
+
+// NewContext new a trace context.
+func NewContext(ctx context.Context) context.Context {
+	return context.WithValue(ctx, _nacosKey, time.Now())
 }
 
 // 将服务注册到nacos中
@@ -205,59 +217,48 @@ func getIpFromAddr(addr net.Addr) net.IP {
 
 // 获取GRPC端口
 func getGrpcPort() (port uint64) {
-	var (
-		cfg warden.ServerConfig
-		ct  paladin.TOML
-	)
-	paladin.Get("grpc.toml").Unmarshal(&ct)
-	ct.Get("Server").UnmarshalTOML(&cfg)
-	dsnArr := strings.Split(cfg.Addr, ":")
-	portS, _ := strconv.Atoi(dsnArr[1])
-	port = uint64(portS)
-	if port == 0 {
-		port = 9000
+	str := os.Getenv("APP_RPC_PORT")
+	if str == "" {
+		str = DefaultGrpcPort
 	}
-	return
+	ports, _ := strconv.Atoi(str)
+	return uint64(ports)
 }
 
 // 获取HTTP端口
 func getHttpPort() (port uint64) {
-	var (
-		cfg bm.ServerConfig
-		ct  paladin.TOML
-	)
-	paladin.Get("http.toml").Unmarshal(&ct)
-	ct.Get("Server").UnmarshalTOML(&cfg)
-	dsnArr := strings.Split(cfg.Addr, ":")
-	portS, _ := strconv.Atoi(dsnArr[1])
-	port = uint64(portS)
-	if port == 0 {
-		port = 8000
+	str := os.Getenv("APP_RPC_PORT")
+	if str == "" {
+		str = DefaultHttpPort
 	}
-	return
+	ports, _ := strconv.Atoi(str)
+	return uint64(ports)
 }
 
 func NewNameClient() (c naming_client.INamingClient, err error) {
-	conf := RpcxConf{}
-	err = paladin.Get("nacos.toml").UnmarshalTOML(&conf)
-	if err != nil {
-		log.Error("[Dao.New] UnmarshalToml err:%v", err)
-		return c, err
+	// 为了便于迁移先写死
+	NacosServer := os.Getenv("NACOS_SERVERS")
+	if NacosServer == "" {
+		panic("Get env:NACOS_SERVERS error")
 	}
-
-	serverConfig := []constant.ServerConfig{{
-		IpAddr: conf.NacosServer.IpAddr,
-		Port:   conf.NacosServer.Port,
-	}}
+	serverConfig := make([]constant.ServerConfig, 0)
+	ss := strings.Split(NacosServer, "")
+	for _, v := range ss {
+		c := strings.Split(v, ":")
+		addr := c[0]
+		port, _ := strconv.Atoi(c[1])
+		serverConfig = append(serverConfig, constant.ServerConfig{
+			IpAddr: addr,
+			Port:   uint64(port),
+		})
+	}
 	clientConfig := constant.ClientConfig{
-		TimeoutMs:            conf.NacosClient.TimeOutMs,
-		BeatInterval:         conf.NacosClient.BeatInterval,
-		NamespaceId:          conf.NacosClient.NameSpaceId,
-		CacheDir:             conf.NacosClient.CacheDir,
-		LogDir:               conf.NacosClient.LogDir,
-		UpdateThreadNum:      conf.NacosClient.UpdateThreadNum,
-		NotLoadCacheAtStart:  conf.NacosClient.NotLoadCacheAtStart,
-		UpdateCacheWhenEmpty: conf.NacosClient.UpdateCacheWhenEmpty,
+		TimeoutMs:            10000, //# 10s 异常会摘除节点
+		BeatInterval:         4000,  // 心跳间隔4s
+		NamespaceId:          "public",
+		UpdateThreadNum:      20,
+		NotLoadCacheAtStart:  true,
+		UpdateCacheWhenEmpty: true,
 	}
 	c, err = clients.NewNamingClient(
 		vo.NacosClientParam{
@@ -365,19 +366,4 @@ func (p *TracePlugin) PostCall(ctx context.Context, servicePath, serviceMethod s
 	)
 
 	return nil
-}
-
-type nacosKey string
-
-var _nacosKey nacosKey = "kratos/pkg/naming/nacos/time"
-
-// FromContext returns the trace bound to the context, if any.
-func FromContext(ctx context.Context) (t time.Time, ok bool) {
-	t, ok = ctx.Value(_nacosKey).(time.Time)
-	return
-}
-
-// NewContext new a trace context.
-func NewContext(ctx context.Context) context.Context {
-	return context.WithValue(ctx, _nacosKey, time.Now())
 }
