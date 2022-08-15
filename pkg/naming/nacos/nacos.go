@@ -301,6 +301,7 @@ func Target(cluster, groupName, serviceName string, ops ...Option) string {
 		cluster = DefaultClusterName
 	}
 
+	// 变更注册方式
 	NacosServer := os.Getenv("NACOS_SERVERS")
 	if NacosServer == "" {
 		panic("Get env:NACOS_SERVERS error")
