@@ -224,7 +224,7 @@ func getGrpcPort() (port uint64) {
 
 // 获取HTTP端口
 func getHttpPort() (port uint64) {
-	str := os.Getenv("APP_RPC_PORT")
+	str := os.Getenv("APP_HTTP_PORT")
 	if str == "" {
 		str = DefaultHttpPort
 	}
