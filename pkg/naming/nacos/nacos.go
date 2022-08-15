@@ -236,7 +236,7 @@ func NewNameClient() (c naming_client.INamingClient, err error) {
 	// 为了便于迁移先写死
 	NacosServer := os.Getenv("NACOS_SERVERS")
 	if NacosServer == "" {
-		panic("Get env:NACOS_SERVERS error")
+		log.Error("Get env:NACOS_SERVERS error")
 	}
 	serverConfig := make([]constant.ServerConfig, 0)
 	ss := strings.Split(NacosServer, " ")
@@ -304,7 +304,7 @@ func Target(cluster, groupName, serviceName string, ops ...Option) string {
 	// 变更注册方式
 	NacosServer := os.Getenv("NACOS_SERVERS")
 	if NacosServer == "" {
-		panic("Get env:NACOS_SERVERS error")
+		log.Error("Get env:NACOS_SERVERS error")
 	}
 	addStr := "nacos://"
 	ns := strings.Split(NacosServer, " ")
