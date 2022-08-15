@@ -17,7 +17,6 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/common/constant"
 	"github.com/nacos-group/nacos-sdk-go/model"
 	"github.com/nacos-group/nacos-sdk-go/vo"
-	"github.com/smallnest/rpcx/client"
 	"kratos/pkg/log"
 )
 
@@ -41,11 +40,6 @@ type options struct {
 	nameSpaceID string
 	mode        string
 	hbInterval  time.Duration
-}
-
-// Dao dao
-type RpcXDao struct {
-	Client client.XClient // Rpcx连接池
 }
 
 type ServerConf struct {
@@ -299,13 +293,27 @@ func newWatcher(ctx context.Context, cli naming_client.INamingClient, serviceNam
 	return w, e
 }
 
-func Target(nacosAddr string, cluster, groupName, serviceName string, ops ...Option) string {
+func Target(cluster, groupName, serviceName string, ops ...Option) string {
 	if groupName == "" {
 		groupName = DefaultGroupName
 	}
 	if cluster == "" {
 		cluster = DefaultClusterName
 	}
+
+	NacosServer := os.Getenv("NACOS_SERVERS")
+	if NacosServer == "" {
+		panic("Get env:NACOS_SERVERS error")
+	}
+	addStr := "nacos://"
+	ns := strings.Split(NacosServer, " ")
+	for i, v := range ns {
+		if i != 0 {
+			addStr += ","
+		}
+		addStr = addStr + v
+	}
+
 	opts := &options{
 		groupName:   groupName,
 		clusters:    cluster,
@@ -316,13 +324,8 @@ func Target(nacosAddr string, cluster, groupName, serviceName string, ops ...Opt
 	for _, v := range ops {
 		v.apply(opts)
 	}
-	tmp := nacosAddr
-	if strings.HasPrefix(nacosAddr, "https://") {
-		tmp = "nacoss://" + nacosAddr[8:]
-	} else if strings.HasPrefix(nacosAddr, "http://") {
-		tmp = "nacos://" + nacosAddr[7:]
-	}
-	str := fmt.Sprintf("%s?s=%s&n=%s&cs=%s&g=%s&m=%s&d=%d", tmp, serviceName, opts.nameSpaceID, opts.clusters, opts.groupName, opts.mode, opts.hbInterval/time.Millisecond)
+
+	str := fmt.Sprintf("%s?s=%s&n=%s&cs=%s&g=%s&m=%s&d=%d", addStr, serviceName, opts.nameSpaceID, opts.clusters, opts.groupName, opts.mode, opts.hbInterval/time.Millisecond)
 
 	return str
 }
