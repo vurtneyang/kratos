@@ -10,6 +10,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+var mappingTags = []string{"form", "uri"}
+
 // scache struct reflect type cache.
 var scache = &cache{
 	data: make(map[reflect.Type]*sinfo),
@@ -36,17 +38,23 @@ func (c *cache) set(obj reflect.Type) (s *sinfo) {
 	s = new(sinfo)
 	tp := obj.Elem()
 	for i := 0; i < tp.NumField(); i++ {
-		fd := new(field)
-		fd.tp = tp.Field(i)
-		tag := fd.tp.Tag.Get("form")
-		fd.name, fd.option = parseTag(tag)
-		if defV := fd.tp.Tag.Get("default"); defV != "" {
-			dv := reflect.New(fd.tp.Type).Elem()
-			setWithProperType(fd.tp.Type.Kind(), []string{defV}, dv, fd.option)
-			fd.hasDefault = true
-			fd.defaultValue = dv
+		for _, tagName := range mappingTags {
+			fd := new(field)
+			fd.tp = tp.Field(i)
+			tag := fd.tp.Tag.Get(tagName)
+			if tag == "" {
+				continue
+			}
+			fd.tag = tagName
+			fd.name, fd.option = parseTag(tag)
+			if defV := fd.tp.Tag.Get("default"); defV != "" {
+				dv := reflect.New(fd.tp.Type).Elem()
+				setWithProperType(fd.tp.Type.Kind(), []string{defV}, dv, fd.option)
+				fd.hasDefault = true
+				fd.defaultValue = dv
+			}
+			s.field = append(s.field, fd)
 		}
-		s.field = append(s.field, fd)
 	}
 	c.mutex.Lock()
 	c.data[obj] = s
@@ -62,15 +70,27 @@ type field struct {
 	tp     reflect.StructField
 	name   string
 	option tagOptions
+	tag    string
 
 	hasDefault   bool          // if field had default value
 	defaultValue reflect.Value // field default value
 }
 
+func mapUri(ptr interface{}, m map[string][]string) error {
+	return mappingByTag(ptr, m, "uri")
+}
+
 func mapForm(ptr interface{}, form map[string][]string) error {
+	return mappingByTag(ptr, form, "form")
+}
+
+func mappingByTag(ptr interface{}, m map[string][]string, tag string) error {
 	sinfo := scache.get(reflect.TypeOf(ptr))
 	val := reflect.ValueOf(ptr).Elem()
 	for i, fd := range sinfo.field {
+		if fd.tag != tag {
+			continue
+		}
 		typeField := fd.tp
 		structField := val.Field(i)
 		if !structField.CanSet() {
@@ -82,18 +102,18 @@ func mapForm(ptr interface{}, form map[string][]string) error {
 		if inputFieldName == "" {
 			inputFieldName = typeField.Name
 
-			// if "form" tag is nil, we inspect if the field is a struct.
-			// this would not make sense for JSON parsing but it does for a form
+			// if "m" tag is nil, we inspect if the field is a struct.
+			// this would not make sense for JSON parsing but it does for a m
 			// since data is flatten
 			if structFieldKind == reflect.Struct {
-				err := mapForm(structField.Addr().Interface(), form)
+				err := mappingByTag(structField.Addr().Interface(), m, tag)
 				if err != nil {
 					return err
 				}
 				continue
 			}
 		}
-		inputValue, exists := form[inputFieldName]
+		inputValue, exists := m[inputFieldName]
 		if !exists {
 			// Set the field as default value when the input value is not exist
 			if fd.hasDefault {
