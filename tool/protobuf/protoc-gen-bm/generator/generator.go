@@ -211,12 +211,35 @@ func (t *bm) generateBMRoute(
 		routeName := utils.LcFirst(utils.CamelCase(servName) +
 			utils.CamelCase(methName))
 
+		var hasUriParams = false
 		methList = append(methList, methodInfo{
 			apiInfo:       apiInfo,
 			midwares:      midwares,
 			routeFuncName: routeName,
 			methodName:    method.GetName(),
 		})
+		if len(generator.GetUriParams(apiInfo.NewPath)) > 0 {
+			hasUriParams = true
+		}
+		for _, rule := range apiInfo.AdditionalBindings {
+			httpMethod, pathPattern, err := generator.ExtractHttpRuleInfo(rule)
+			if err != nil {
+				continue
+			}
+			methList = append(methList, methodInfo{
+				midwares:      midwares,
+				routeFuncName: routeName,
+				apiInfo: &generator.HTTPInfo{
+					HttpMethod: httpMethod,
+					LegacyPath: pathPattern,
+					NewPath:    pathPattern,
+				},
+				methodName: method.GetName(),
+			})
+			if len(generator.GetUriParams(pathPattern)) > 0 {
+				hasUriParams = true
+			}
+		}
 
 		multipartStr := tag.GetTagValue("multipart", tags)
 		downloadStr := tag.GetTagValue("download", tags)
@@ -227,12 +250,19 @@ func (t *bm) generateBMRoute(
 		if t.hasHeaderTag(t.Reg.MessageDefinition(method.GetInputType())) {
 			requestBinding = ", binding.Request"
 		}
+
+		if hasUriParams {
+			t.P(` if err := c.BindUri(p); err != nil {`)
+			t.P(` 	return`)
+			t.P(` }`)
+		}
+
 		t.P(`	if err := c.BindWith(p, binding.Default(c.Request.Method, c.Request.Header.Get("Content-Type"))` +
 			requestBinding + `); err != nil {`)
 		t.P(`		return`)
 		t.P(`	}`)
 		if multipartStr != "" {
-			t.P(`	files := c.Request.MultipartForm.File["`, multipartStr,`"]`)
+			t.P(`	files := c.Request.MultipartForm.File["`, multipartStr, `"]`)
 			t.P(`	resp, err := `, svcName, `.`, methName, `(c, files, p)`)
 		} else if downloadStr != "" {
 			t.P(`	c.Writer.Header().Set("Content-Transfer-Encoding", "binary")`)
@@ -287,7 +317,7 @@ func (t *bm) generateBMRoute(
 			} else {
 				midArgStr = strings.Join(methInfo.midwares, ", ") + ", "
 			}
-			t.P(`e.`, methInfo.apiInfo.HttpMethod, `("`, methInfo.apiInfo.LegacyPath, `", `, midArgStr, methInfo.routeFuncName, `)`)
+			t.P(`e.`, methInfo.apiInfo.HttpMethod, `("`, generator.TransformUriParams(methInfo.apiInfo.LegacyPath), `", `, midArgStr, methInfo.routeFuncName, `)`)
 		}
 		t.P(`	}`)
 	} else {
@@ -297,7 +327,7 @@ func (t *bm) generateBMRoute(
 		t.P(`func `, bmFuncName, `(e *bm.Engine, server `, servName, `BMServer) {`)
 		t.P(svcName, ` = server`)
 		for _, methInfo := range methList {
-			t.P(`e.`, methInfo.apiInfo.HttpMethod, `("`, methInfo.apiInfo.NewPath, `",`, methInfo.routeFuncName, ` )`)
+			t.P(`e.`, methInfo.apiInfo.HttpMethod, `("`, generator.TransformUriParams(methInfo.apiInfo.NewPath), `",`, methInfo.routeFuncName, ` )`)
 		}
 		t.P(`	}`)
 	}
