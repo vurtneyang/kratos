@@ -134,3 +134,28 @@ func GetFieldRequired(
 func MakeIndentStr(i int) string {
 	return strings.Repeat(" ", i)
 }
+
+// GetUriParams 获取 path 中包含的 uri 参数
+func GetUriParams(path string) []string {
+	params := make([]string, 0)
+	paths := strings.Split(path, "/")
+	for _, p := range paths {
+		if len(p) > 2 && (p[0] == '{' && p[len(p)-1] == '}') {
+			params = append(params, p[1:len(p)-1])
+		} else if len(p) > 1 && p[0] == ':' {
+			params = append(params, p[1:])
+		}
+	}
+	return params
+}
+
+// TransformUriParams 转换 path 中的 uri 参数格式   /user/{id} => /user/:id
+func TransformUriParams(path string) string {
+	paths := strings.Split(path, "/")
+	for i, p := range paths {
+		if len(p) > 2 && (p[0] == '{' && p[len(p)-1] == '}') {
+			paths[i] = ":" + p[1:len(p)-1]
+		}
+	}
+	return strings.Join(paths, "/")
+}

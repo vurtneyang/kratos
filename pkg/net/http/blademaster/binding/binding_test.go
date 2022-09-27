@@ -167,6 +167,24 @@ func TestBindingXML(t *testing.T) {
 		"<map><foo>bar</foo></map>", "<map><bar>foo</bar></map>")
 }
 
+func TestBindingUri(t *testing.T) {
+	assert.Equal(t, "uri", Uri.Name())
+
+	type Tag struct {
+		Name string `uri:"name"`
+		Age  int64  `uri:"age"`
+	}
+	var tag Tag
+	m := map[string][]string{
+		"name": []string{"alice"},
+		"age":  []string{"16"},
+	}
+	assert.NoError(t, Uri.BindUri(m, &tag))
+
+	assert.Equal(t, "alice", tag.Name)
+	assert.Equal(t, int64(16), tag.Age)
+}
+
 func createFormPostRequest() *http.Request {
 	req, _ := http.NewRequest("POST", "/?foo=getfoo&bar=getbar", bytes.NewBufferString("foo=bar&bar=foo"))
 	req.Header.Set("Content-Type", MIMEPOSTForm)

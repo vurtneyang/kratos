@@ -411,6 +411,15 @@ func (c *Context) mustBindWith(obj interface{}, b binding.Binding) (err error) {
 	return
 }
 
+// BindUri binds the passed struct pointer using the uri binding engine
+func (c *Context) BindUri(obj interface{}) (err error) {
+	m := make(map[string][]string)
+	for _, v := range c.Params {
+		m[v.Key] = []string{v.Value}
+	}
+	return binding.Uri.BindUri(m, obj)
+}
+
 func writeStatusCode(w http.ResponseWriter, ecode int) {
 	header := w.Header()
 	header.Set("kratos-status-code", strconv.FormatInt(int64(ecode), 10))

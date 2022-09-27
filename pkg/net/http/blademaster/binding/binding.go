@@ -57,6 +57,7 @@ var (
 	Query         = queryBinding{}
 	FormPost      = formPostBinding{}
 	FormMultipart = formMultipartBinding{}
+	Uri           = uriBinding{}
 )
 
 // Default get by binding type by method and contexttype.

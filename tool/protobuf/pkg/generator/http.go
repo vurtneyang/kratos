@@ -24,6 +24,8 @@ type HTTPInfo struct {
 	Description  string
 	// is http path added in the google.api.http option ?
 	HasExplicitHTTPPath bool
+
+	AdditionalBindings []*annotations.HttpRule
 }
 
 type googleMethodOptionInfo struct {
@@ -90,6 +92,7 @@ END:
 		Title:               title,
 		Description:         desc,
 		HasExplicitHTTPPath: explicitHTTPPath,
+		AdditionalBindings:  googleOptionInfo.HTTPRule.AdditionalBindings,
 	}
 	if title == "" {
 		param.Title = param.Path
@@ -116,8 +119,20 @@ func ParseBMMethod(method *descriptor.MethodDescriptorProto) (*googleMethodOptio
 		return nil, fmt.Errorf("get extension error: %s", err)
 	}
 	rule := ext.(*annotations.HttpRule)
-	var httpMethod string
-	var pathPattern string
+	httpMethod, pathPattern, err := ExtractHttpRuleInfo(rule)
+	if err != nil {
+		return nil, fmt.Errorf("extract annotation http rule info error: %w", err)
+	}
+	bmMethod := &googleMethodOptionInfo{
+		Method:      httpMethod,
+		PathPattern: pathPattern,
+		HTTPRule:    rule,
+	}
+	return bmMethod, nil
+}
+
+// ExtractHttpRuleInfo extract http method and path pattern info from annotations.HttpRule
+func ExtractHttpRuleInfo(rule *annotations.HttpRule) (httpMethod string, pathPattern string, err error) {
 	switch pattern := rule.Pattern.(type) {
 	case *annotations.HttpRule_Custom:
 		pathPattern = pattern.Custom.Path
@@ -138,12 +153,7 @@ func ParseBMMethod(method *descriptor.MethodDescriptorProto) (*googleMethodOptio
 		pathPattern = pattern.Delete
 		httpMethod = http.MethodDelete
 	default:
-		return nil, fmt.Errorf("unsupport http pattern %s", rule.Pattern)
+		return "", "", fmt.Errorf("unsupport http pattern %s", rule.Pattern)
 	}
-	bmMethod := &googleMethodOptionInfo{
-		Method:      httpMethod,
-		PathPattern: pathPattern,
-		HTTPRule:    rule,
-	}
-	return bmMethod, nil
+	return httpMethod, pathPattern, nil
 }
