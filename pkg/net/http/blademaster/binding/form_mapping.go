@@ -40,6 +40,7 @@ func (c *cache) set(obj reflect.Type) (s *sinfo) {
 	for i := 0; i < tp.NumField(); i++ {
 		for _, tagName := range mappingTags {
 			fd := new(field)
+			fd.index = i
 			fd.tp = tp.Field(i)
 			tag := fd.tp.Tag.Get(tagName)
 			if tag == "" {
@@ -67,6 +68,7 @@ type sinfo struct {
 }
 
 type field struct {
+	index  int
 	tp     reflect.StructField
 	name   string
 	option tagOptions
@@ -87,12 +89,12 @@ func mapForm(ptr interface{}, form map[string][]string) error {
 func mappingByTag(ptr interface{}, m map[string][]string, tag string) error {
 	sinfo := scache.get(reflect.TypeOf(ptr))
 	val := reflect.ValueOf(ptr).Elem()
-	for i, fd := range sinfo.field {
+	for _, fd := range sinfo.field {
 		if fd.tag != tag {
 			continue
 		}
 		typeField := fd.tp
-		structField := val.Field(i)
+		structField := val.Field(fd.index)
 		if !structField.CanSet() {
 			continue
 		}
