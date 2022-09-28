@@ -41,11 +41,12 @@ func GetHTTPInfo(
 	method *descriptor.MethodDescriptorProto,
 	reg *typemap.Registry) *HTTPInfo {
 	var (
-		title            string
-		desc             string
-		httpMethod       string
-		newPath          string
-		explicitHTTPPath bool
+		title              string
+		desc               string
+		httpMethod         string
+		newPath            string
+		explicitHTTPPath   bool
+		additionalBindings []*annotations.HttpRule
 	)
 	comment, _ := reg.MethodComments(file, service, method)
 	tags := tag.GetTagsInComment(comment.Leading)
@@ -64,6 +65,7 @@ func GetHTTPInfo(
 	googleOptionInfo, err := ParseBMMethod(method)
 	if err == nil {
 		httpMethod = strings.ToUpper(googleOptionInfo.Method)
+		additionalBindings = googleOptionInfo.HTTPRule.AdditionalBindings
 		p := googleOptionInfo.PathPattern
 		if p != "" {
 			explicitHTTPPath = true
@@ -85,14 +87,15 @@ func GetHTTPInfo(
 	newPath = "/" + file.GetPackage() + "." + service.GetName() + "/" + method.GetName()
 END:
 	var p = newPath
-	param := &HTTPInfo{HttpMethod: httpMethod,
+	param := &HTTPInfo{
+		HttpMethod:          httpMethod,
 		Path:                p,
 		NewPath:             newPath,
 		IsLegacyPath:        false,
 		Title:               title,
 		Description:         desc,
 		HasExplicitHTTPPath: explicitHTTPPath,
-		AdditionalBindings:  googleOptionInfo.HTTPRule.AdditionalBindings,
+		AdditionalBindings:  additionalBindings,
 	}
 	if title == "" {
 		param.Title = param.Path
