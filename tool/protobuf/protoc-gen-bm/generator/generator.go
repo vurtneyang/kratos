@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/golang/protobuf/proto"
@@ -72,7 +73,15 @@ func (t *bm) generatePathConstants(file *descriptor.FileDescriptorProto) {
 				continue
 			}
 			apiInfo := t.GetHttpInfoCached(file, service, method)
-			t.P(`var Path`, name, naming.MethodName(method), ` = "`, apiInfo.Path, `"`)
+			t.P(`var Path`, name, naming.MethodName(method), ` = "`, generator.TransformUriParams(apiInfo.Path), `"`)
+
+			for i, rule := range apiInfo.AdditionalBindings {
+				httpMethod, pathPattern, err := generator.ExtractHttpRuleInfo(rule)
+				if err != nil {
+					continue
+				}
+				t.P(`var Path`, name, naming.MethodName(method), strconv.Itoa(i+1), httpMethod, ` = "`, generator.TransformUriParams(pathPattern), `"`)
+			}
 		}
 		t.P()
 	}
