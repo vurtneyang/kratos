@@ -24,7 +24,7 @@ func Trace() HandlerFunc {
 		if err != nil {
 			var opts []trace.Option
 			if ok, _ := strconv.ParseBool(trace.KratosTraceDebug); ok {
-				opts = append(opts, trace.EnableDebug())
+				//opts = append(opts, trace.EnableDebug())
 			}
 			t = trace.New(c.Request.URL.Path, opts...)
 		}
