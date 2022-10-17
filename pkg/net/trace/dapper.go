@@ -10,7 +10,7 @@ import (
 const (
 	_maxLevel = 64
 	// hard code reset probability at 0.25, 1/40
-	_probability = 0.25
+	_probability = 0.001
 )
 
 // NewTracer new a tracer.
@@ -162,9 +162,9 @@ func (d *dapper) Close() error {
 
 func (d *dapper) report(sp *Span) {
 	if sp.context.isSampled() {
-		if err := d.reporter.WriteSpan(sp); err != nil {
-			//d.stdlog.Printf("marshal trace span error: %s", err)
-		}
+		//if err := d.reporter.WriteSpan(sp); err != nil {
+		//d.stdlog.Printf("marshal trace span error: %s", err)
+		//}
 	}
 	d.putSpan(sp)
 }
