@@ -29,8 +29,10 @@ const (
 	Mirror = "mirror"
 
 	// Mid 外网账户用户id
-	Mid = "mid" // NOTE: ！！！业务可重新修改key名！！！
-	Uk  = "uk"  // 业务中使用的user_key
+	Mid          = "mid"           // NOTE: ！！！业务可重新修改key名！！！
+	Uk           = "uk"            // 业务中使用的user_key
+	OperatorName = "operator_name" // 操作人员姓名
+	OperatorRole = "operator_role" // 操作人员角色
 
 	// Device 客户端信息
 	Device = "device"
