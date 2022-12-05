@@ -2,6 +2,7 @@ package generator
 
 import (
 	"fmt"
+	"kratos/tool/protobuf/pkg/utils"
 	"net/http"
 	"strings"
 
@@ -24,6 +25,10 @@ type HTTPInfo struct {
 	Description  string
 	// is http path added in the google.api.http option ?
 	HasExplicitHTTPPath bool
+
+	// which field should be bind in body
+	Body         string
+	ResponseBody string
 
 	AdditionalBindings []*annotations.HttpRule
 }
@@ -73,7 +78,6 @@ func GetHTTPInfo(
 			goto END
 		}
 	}
-
 	if httpMethod == "" {
 		// resolve http method
 		httpMethod = tag.GetTagValue("method", tags)
@@ -100,6 +104,20 @@ END:
 	if title == "" {
 		param.Title = param.Path
 	}
+	// how bind request body and response body
+	body := googleOptionInfo.HTTPRule.Body
+	responseBody := googleOptionInfo.HTTPRule.ResponseBody
+	if body == "*" {
+		param.Body = ""
+	} else if body != "" {
+		param.Body = "." + utils.CamelCaseDotString(body)
+	}
+	if responseBody == "*" {
+		param.ResponseBody = ""
+	} else if responseBody != "" {
+		param.ResponseBody = "." + utils.CamelCaseDotString(responseBody)
+	}
+
 	return param
 }
 
