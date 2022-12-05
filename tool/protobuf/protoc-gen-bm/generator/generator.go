@@ -254,19 +254,19 @@ func (t *bm) generateBMRoute(
 		downloadStr := tag.GetTagValue("download", tags)
 
 		t.P(fmt.Sprintf("func %s (c *bm.Context) {", routeName))
-		t.P(`	p := new(`, inputType, `)`)
+		t.P(`	var p ` + inputType)
 		requestBinding := ""
 		if t.hasHeaderTag(t.Reg.MessageDefinition(method.GetInputType())) {
 			requestBinding = ", binding.Request"
 		}
 
 		if hasUriParams {
-			t.P(` if err := c.BindUri(p); err != nil {`)
+			t.P(` if err := c.BindUri(&p); err != nil {`)
 			t.P(` 	return`)
 			t.P(` }`)
 		}
 
-		t.P(`	if err := c.BindWith(p, binding.Default(c.Request.Method, c.Request.Header.Get("Content-Type"))` +
+		t.P(`	if err := c.BindWith(&p` + apiInfo.Body + `, binding.Default(c.Request.Method, c.Request.Header.Get("Content-Type"))` +
 			requestBinding + `); err != nil {`)
 		t.P(`		return`)
 		t.P(`	}`)
@@ -287,9 +287,9 @@ func (t *bm) generateBMRoute(
 			t.P(``)
 			continue
 		} else {
-			t.P(`	resp, err := `, svcName, `.`, methName, `(c, p)`)
+			t.P(`	resp, err := `, svcName, `.`, methName, `(c, &p)`)
 		}
-		t.P(`	c.JSON(resp, err)`)
+		t.P(`	c.JSON(resp` + apiInfo.ResponseBody + `, err)`)
 		t.P(`}`)
 		t.P(``)
 	}

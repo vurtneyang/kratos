@@ -67,6 +67,17 @@ func CamelCase(s string) string {
 // be joined with "_" and then camelcased.
 func CamelCaseSlice(elem []string) string { return CamelCase(strings.Join(elem, "_")) }
 
+// CamelCaseDotString
+// aa.bbb_ddd -> Aa.BbbDdd
+func CamelCaseDotString(s string) string {
+	subs := strings.Split(s, ".")
+	ret := make([]string, 0, len(subs))
+	for _, sub := range subs {
+		ret = append(ret, CamelCase(sub))
+	}
+	return strings.Join(ret, ".")
+}
+
 // BaseName the last path element of a slash-delimited name, with the last
 // dotted suffix removed.
 func BaseName(name string) string {
