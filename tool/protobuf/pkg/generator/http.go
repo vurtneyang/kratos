@@ -51,6 +51,8 @@ func GetHTTPInfo(
 		httpMethod         string
 		newPath            string
 		explicitHTTPPath   bool
+		body               string
+		responseBody       string
 		additionalBindings []*annotations.HttpRule
 	)
 	comment, _ := reg.MethodComments(file, service, method)
@@ -71,6 +73,8 @@ func GetHTTPInfo(
 	if err == nil {
 		httpMethod = strings.ToUpper(googleOptionInfo.Method)
 		additionalBindings = googleOptionInfo.HTTPRule.AdditionalBindings
+		body = googleOptionInfo.HTTPRule.Body
+		responseBody = googleOptionInfo.HTTPRule.ResponseBody
 		p := googleOptionInfo.PathPattern
 		if p != "" {
 			explicitHTTPPath = true
@@ -105,8 +109,6 @@ END:
 		param.Title = param.Path
 	}
 	// how bind request body and response body
-	body := googleOptionInfo.HTTPRule.Body
-	responseBody := googleOptionInfo.HTTPRule.ResponseBody
 	if body == "*" {
 		param.Body = ""
 	} else if body != "" {
