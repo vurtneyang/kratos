@@ -393,6 +393,14 @@ func (p *Slice) release() {
 	p.maybeOpenNewItems()
 }
 
+func (p *Slice) Stats() (int, int) {
+	p.mu.Lock()
+	active := p.active
+	idle := len(p.freeItem)
+	p.mu.Unlock()
+	return active, idle
+}
+
 // Close close pool.
 func (p *Slice) Close() error {
 	p.mu.Lock()

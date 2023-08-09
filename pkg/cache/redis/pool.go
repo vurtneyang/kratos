@@ -85,12 +85,27 @@ func NewPool(c *Config, options ...DialOption) (p *Pool) {
 // getting an underlying connection, then the connection Err, Do, Send, Flush
 // and Receive methods return that error.
 func (p *Pool) Get(ctx context.Context) Conn {
+	now := time.Now()
 	c, err := p.Slice.Get(ctx)
 	if err != nil {
 		return errorConnection{err}
 	}
+	if p.statfunc != nil {
+		p.statfunc(p.c.Name, p.c.Addr, "GET CONN", now, err)()
+		p.connStat()
+	}
 	c1, _ := c.(Conn)
 	return &pooledConnection{p: p, c: c1.WithContext(ctx), rc: c1, now: beginTime}
+}
+
+func (p *Pool) connStat() {
+	// 配置的最大active、idle
+	_metricConnTotal.Set(float64(p.c.Active), p.c.Name, p.c.Addr, "active")
+	_metricConnTotal.Set(float64(p.c.Idle), p.c.Name, p.c.Addr, "idle")
+	// 实际的active、idle
+	active, idle := p.Slice.Stats()
+	_metricConnCurrent.Set(float64(active), p.c.Name, p.c.Addr, "active")
+	_metricConnCurrent.Set(float64(idle), p.c.Name, p.c.Addr, "idle")
 }
 
 // Close releases the resources used by the pool.
