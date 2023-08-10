@@ -1,16 +1,15 @@
 package redis
 
 import (
+	"fmt"
 	"strings"
-
-	"kratos/pkg/log"
 
 	pkgerr "github.com/pkg/errors"
 )
 
 func formatErr(err error, name, addr string) string {
 	e := pkgerr.Cause(err)
-	log.Error("[formatErr] Redis %v", e)
+	fmt.Println("[formatErr] Redis %v", e)
 	switch e {
 	case ErrNil, nil:
 		if e == ErrNil {
