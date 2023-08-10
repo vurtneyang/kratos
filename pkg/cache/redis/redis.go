@@ -56,6 +56,10 @@ func NewRedis(c *Config, options ...DialOption) *Redis {
 // Do gets a new conn from pool, then execute Do with this conn, finally close this conn.
 // ATTENTION: Don't use this method with transaction command like MULTI etc. Because every Do will close conn automatically, use r.Conn to get a raw conn for this situation.
 func (r *Redis) Do(ctx context.Context, commandName string, args ...interface{}) (reply interface{}, err error) {
+	if ctx.Err() != nil {
+		return nil, ctx.Err()
+	}
+
 	conn := r.pool.Get(ctx)
 	defer conn.Close()
 	reply, err = conn.Do(commandName, args...)

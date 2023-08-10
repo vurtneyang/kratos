@@ -40,15 +40,15 @@ type traceConn struct {
 func (t *traceConn) Do(commandName string, args ...interface{}) (reply interface{}, err error) {
 	statement := getStatement(commandName, args...)
 	defer t.slowLog(statement, time.Now())
+	if t.tr == nil {
+		return t.Conn.Do(commandName, args...)
+	}
 
 	// NOTE: ignored empty commandName
 	// current sdk will Do empty command after pipeline finished
 	if commandName == "" {
 		t.pending = 0
 		t.trPipe = nil
-		return t.Conn.Do(commandName, args...)
-	}
-	if t.tr == nil {
 		return t.Conn.Do(commandName, args...)
 	}
 	tr := t.tr.Fork("", "Redis:"+commandName)
