@@ -2,7 +2,6 @@ package xredis
 
 import (
 	"context"
-	"fmt"
 
 	"kratos/pkg/cache/redis"
 )
@@ -83,7 +82,6 @@ func (c *Client) Process(ctx context.Context, cmd Cmder) error {
 	}
 
 	conn := c.p.Get(ctx)
-	fmt.Printf("[Process] 123 %s %v \n", cmd.Name(), cmd.Args())
 	cmd.setReply(conn.Do(cmd.Name(), cmd.Args()[1:]...))
 	conn.Close()
 	return cmd.Err()
