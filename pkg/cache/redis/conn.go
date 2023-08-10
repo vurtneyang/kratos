@@ -548,6 +548,7 @@ func (c *conn) Do(cmd string, args ...interface{}) (reply interface{}, err error
 	c.mu.Unlock()
 	fmt.Printf("[Do] enter Do \n")
 	if cmd == "" && pending == 0 {
+		fmt.Printf("[Do] return 777 Do err(%v)\n", err)
 		return nil, nil
 	}
 
