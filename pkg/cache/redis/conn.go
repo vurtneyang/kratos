@@ -558,6 +558,7 @@ func (c *conn) Do(cmd string, args ...interface{}) (reply interface{}, err error
 		err = errors.WithStack(c.bw.Flush())
 	}
 	if err != nil {
+		fmt.Printf("[Do] return 111 Do err(%v)\n", err)
 		return nil, c.fatal(err)
 	}
 	if c.readTimeout != 0 {
@@ -574,6 +575,7 @@ func (c *conn) Do(cmd string, args ...interface{}) (reply interface{}, err error
 			reply[i] = r
 		}
 		if err != nil {
+			fmt.Printf("[Do] return 222 Do err(%v)\n", err)
 			return nil, c.fatal(err)
 		}
 		return reply, nil
@@ -582,9 +584,11 @@ func (c *conn) Do(cmd string, args ...interface{}) (reply interface{}, err error
 	for i := 0; i <= pending; i++ {
 		var e error
 		if reply, e = c.readReply(); e != nil {
+			fmt.Printf("[Do] return 333 Do err(%v)\n", err)
 			return nil, c.fatal(e)
 		}
 		if e, ok := reply.(Error); ok && err == nil {
+			fmt.Printf("[Do] return 444 Do err(%v)\n", err)
 			err = e
 		}
 	}
