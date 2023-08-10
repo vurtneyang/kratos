@@ -207,6 +207,7 @@ func (pc *pooledConnection) Do(commandName string, args ...interface{}) (reply i
 	ci := LookupCommandInfo(commandName)
 	pc.state = (pc.state | ci.Set) &^ ci.Clear
 	reply, err = pc.c.Do(commandName, args...)
+	fmt.Printf("[pool Do] err:(%v) \n", err)
 	if pc.p.statfunc != nil {
 		pc.p.statfunc(pc.p.c.Name, pc.p.c.Addr, commandName, now, err)()
 	}
