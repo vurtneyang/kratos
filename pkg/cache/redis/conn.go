@@ -546,9 +546,7 @@ func (c *conn) Do(cmd string, args ...interface{}) (reply interface{}, err error
 	pending := c.pending
 	c.pending = 0
 	c.mu.Unlock()
-	fmt.Printf("[Do] enter Do \n")
 	if cmd == "" && pending == 0 {
-		fmt.Printf("[Do] return 777 Do err(%v)\n", err)
 		return nil, nil
 	}
 
@@ -559,7 +557,6 @@ func (c *conn) Do(cmd string, args ...interface{}) (reply interface{}, err error
 		err = errors.WithStack(c.bw.Flush())
 	}
 	if err != nil {
-		fmt.Printf("[Do] return 111 Do err(%v)\n", err)
 		return nil, c.fatal(err)
 	}
 	if c.readTimeout != 0 {
@@ -571,32 +568,25 @@ func (c *conn) Do(cmd string, args ...interface{}) (reply interface{}, err error
 			var r interface{}
 			r, err = c.readReply()
 			if err != nil {
-				fmt.Printf("[Do] return 555 Do err(%v)\n", err)
 				break
 			}
 			reply[i] = r
 		}
 		if err != nil {
-			fmt.Printf("[Do] return 222 Do err(%v)\n", err)
 			return nil, c.fatal(err)
 		}
-		fmt.Printf("[Do] return 666 Do err(%v)\n", err)
 		return reply, nil
 	}
 
 	for i := 0; i <= pending; i++ {
 		var e error
 		if reply, e = c.readReply(); e != nil {
-			fmt.Printf("[Do] return 333 Do err(%v)\n", err)
 			return nil, c.fatal(e)
 		}
 		if e, ok := reply.(Error); ok && err == nil {
-			fmt.Printf("[Do] return 444 Do err(%v)\n", err)
 			err = e
 		}
 	}
-	fmt.Printf("[Do] err:(%v)", err)
-
 	return reply, err
 }
 

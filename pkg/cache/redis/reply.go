@@ -157,6 +157,7 @@ func String(reply interface{}, err error) (string, error) {
 	case string:
 		return reply, nil
 	case nil:
+		_metricMisses.Inc("", "")
 		return "", ErrNil
 	case Error:
 		return "", reply

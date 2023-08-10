@@ -1,7 +1,6 @@
 package redis
 
 import (
-	"fmt"
 	"strings"
 
 	pkgerr "github.com/pkg/errors"
@@ -9,7 +8,6 @@ import (
 
 func formatErr(err error, name, addr string) string {
 	e := pkgerr.Cause(err)
-	fmt.Println("[formatErr] Redis %v", e)
 	switch e {
 	case ErrNil, nil:
 		if e == ErrNil {

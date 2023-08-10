@@ -20,7 +20,6 @@ import (
 	"crypto/rand"
 	"crypto/sha1"
 	"errors"
-	"fmt"
 	"io"
 	"strconv"
 	"sync"
@@ -149,7 +148,6 @@ func (p *Pool) SetStatFunc(fn func(name, addr, cmd string, t time.Time, err erro
 func pstat(name, addr, cmd string, t time.Time, err error) func() {
 	return func() {
 		_metricReqDur.Observe(int64(time.Since(t)/time.Millisecond), name, addr, cmd)
-		fmt.Printf("[debug Redis] %s %s %s | %v \n", name, addr, cmd, err)
 		if err != nil {
 			if msg := formatErr(err, name, addr); msg != "" {
 				_metricReqErr.Inc(name, addr, cmd, msg)
@@ -207,7 +205,6 @@ func (pc *pooledConnection) Do(commandName string, args ...interface{}) (reply i
 	ci := LookupCommandInfo(commandName)
 	pc.state = (pc.state | ci.Set) &^ ci.Clear
 	reply, err = pc.c.Do(commandName, args...)
-	fmt.Printf("[pool Do] err:(%v) %s %v \n", err, commandName, args)
 	if pc.p.statfunc != nil {
 		pc.p.statfunc(pc.p.c.Name, pc.p.c.Addr, commandName, now, err)()
 	}
