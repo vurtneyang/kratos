@@ -20,6 +20,7 @@ import (
 	"crypto/rand"
 	"crypto/sha1"
 	"errors"
+	"fmt"
 	"io"
 	"strconv"
 	"sync"
@@ -148,6 +149,7 @@ func (p *Pool) SetStatFunc(fn func(name, addr, cmd string, t time.Time, err erro
 func pstat(name, addr, cmd string, t time.Time, err error) func() {
 	return func() {
 		_metricReqDur.Observe(int64(time.Since(t)/time.Millisecond), name, addr, cmd)
+		fmt.Println("[debug Redis] %s %s %s %v", name, addr, cmd, err)
 		if err != nil {
 			if msg := formatErr(err, name, addr); msg != "" {
 				_metricReqErr.Inc(name, addr, cmd, msg)
