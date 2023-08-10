@@ -570,6 +570,7 @@ func (c *conn) Do(cmd string, args ...interface{}) (reply interface{}, err error
 			var r interface{}
 			r, err = c.readReply()
 			if err != nil {
+				fmt.Printf("[Do] return 555 Do err(%v)\n", err)
 				break
 			}
 			reply[i] = r
@@ -578,6 +579,7 @@ func (c *conn) Do(cmd string, args ...interface{}) (reply interface{}, err error
 			fmt.Printf("[Do] return 222 Do err(%v)\n", err)
 			return nil, c.fatal(err)
 		}
+		fmt.Printf("[Do] return 666 Do err(%v)\n", err)
 		return reply, nil
 	}
 
