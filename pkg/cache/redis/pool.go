@@ -88,12 +88,12 @@ func NewPool(c *Config, options ...DialOption) (p *Pool) {
 func (p *Pool) Get(ctx context.Context) Conn {
 	now := time.Now()
 	c, err := p.Slice.Get(ctx)
-	if err != nil {
-		return errorConnection{err}
-	}
 	if p.statfunc != nil {
 		p.statfunc(p.c.Name, p.c.Addr, "GET CONN", now, err)()
 		p.connStat()
+	}
+	if err != nil {
+		return errorConnection{err}
 	}
 	c1, _ := c.(Conn)
 	return &pooledConnection{p: p, c: c1.WithContext(ctx), rc: c1, now: beginTime}
