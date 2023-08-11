@@ -22,7 +22,7 @@ var (
 		Help:      "redis client requests error count.",
 		Labels:    []string{"name", "addr", "command", "error"},
 	})
-	_metricConnTotal = metric.NewCounterVec(&metric.CounterVecOpts{
+	_metricConnTotal = metric.NewGaugeVec(&metric.GaugeVecOpts{
 		Namespace: namespace,
 		Subsystem: "connections",
 		Name:      "total",
