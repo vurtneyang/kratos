@@ -130,7 +130,8 @@ type Engine struct {
 	pcLock        sync.RWMutex
 	methodConfigs map[string]*MethodConfig
 
-	injections []injection
+	injections      []injection
+	pathMiddlewares []pathMiddleware
 
 	// If enabled, the url.RawPath will be used to find parameters.
 	UseRawPath bool
@@ -158,6 +159,11 @@ type Engine struct {
 
 type injection struct {
 	pattern  *regexp.Regexp
+	handlers []HandlerFunc
+}
+
+type pathMiddleware struct {
+	path     string
 	handlers []HandlerFunc
 }
 
@@ -478,6 +484,13 @@ func (engine *Engine) metadata() HandlerFunc {
 func (engine *Engine) Inject(pattern string, handlers ...HandlerFunc) {
 	engine.injections = append(engine.injections, injection{
 		pattern:  regexp.MustCompile(pattern),
+		handlers: handlers,
+	})
+}
+
+func (engine *Engine) PathMatch(path string, handlers ...HandlerFunc) {
+	engine.pathMiddlewares = append(engine.pathMiddlewares, pathMiddleware{
+		path:     path,
 		handlers: handlers,
 	})
 }

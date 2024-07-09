@@ -74,7 +74,8 @@ func (group *RouterGroup) BasePath() string {
 func (group *RouterGroup) handle(httpMethod, relativePath string, handlers ...HandlerFunc) IRoutes {
 	absolutePath := group.calculateAbsolutePath(relativePath)
 	injections := group.injections(relativePath)
-	handlers = group.combineHandlers(injections, handlers)
+	pathMiddlewares := group.pathMiddlewares(relativePath)
+	handlers = group.combineHandlers(injections, pathMiddlewares, handlers)
 	group.engine.addRoute(httpMethod, absolutePath, handlers...)
 	if group.baseConfig != nil {
 		group.engine.SetMethodConfig(absolutePath, group.baseConfig)
@@ -171,6 +172,17 @@ func (group *RouterGroup) injections(relativePath string) []HandlerFunc {
 			continue
 		}
 		return injection.handlers
+	}
+	return nil
+}
+
+func (group *RouterGroup) pathMiddlewares(relativePath string) []HandlerFunc {
+	absPath := group.calculateAbsolutePath(relativePath)
+	for _, pathMiddleware := range group.engine.pathMiddlewares {
+		if pathMiddleware.path != absPath {
+			continue
+		}
+		return pathMiddleware.handlers
 	}
 	return nil
 }
