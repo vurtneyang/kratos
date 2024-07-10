@@ -131,7 +131,7 @@ type Engine struct {
 	methodConfigs map[string]*MethodConfig
 
 	injections      []injection
-	pathMiddlewares []pathMiddleware
+	pathMiddlewares map[string][]HandlerFunc
 
 	// If enabled, the url.RawPath will be used to find parameters.
 	UseRawPath bool
@@ -187,6 +187,7 @@ func NewServer(conf *ServerConfig) *Engine {
 		methodConfigs:          make(map[string]*MethodConfig),
 		HandleMethodNotAllowed: true,
 		injections:             make([]injection, 0),
+		pathMiddlewares:        make(map[string][]HandlerFunc, 512),
 	}
 	if err := engine.SetConfig(conf); err != nil {
 		panic(err)
@@ -489,10 +490,7 @@ func (engine *Engine) Inject(pattern string, handlers ...HandlerFunc) {
 }
 
 func (engine *Engine) PathMatch(path string, handlers ...HandlerFunc) {
-	engine.pathMiddlewares = append(engine.pathMiddlewares, pathMiddleware{
-		path:     path,
-		handlers: handlers,
-	})
+	engine.pathMiddlewares[path] = append(engine.pathMiddlewares[path], handlers...)
 }
 
 // ServeHTTP conforms to the http.Handler interface.

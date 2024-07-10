@@ -178,11 +178,8 @@ func (group *RouterGroup) injections(relativePath string) []HandlerFunc {
 
 func (group *RouterGroup) pathMiddlewares(relativePath string) []HandlerFunc {
 	absPath := group.calculateAbsolutePath(relativePath)
-	for _, pathMiddleware := range group.engine.pathMiddlewares {
-		if pathMiddleware.path != absPath {
-			continue
-		}
-		return pathMiddleware.handlers
+	if handlers, has := group.engine.pathMiddlewares[absPath]; has {
+		return handlers
 	}
 	return nil
 }
