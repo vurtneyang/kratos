@@ -130,7 +130,8 @@ type Engine struct {
 	pcLock        sync.RWMutex
 	methodConfigs map[string]*MethodConfig
 
-	injections []injection
+	injections      []injection
+	pathMiddlewares map[string][]HandlerFunc
 
 	// If enabled, the url.RawPath will be used to find parameters.
 	UseRawPath bool
@@ -161,6 +162,11 @@ type injection struct {
 	handlers []HandlerFunc
 }
 
+type pathMiddleware struct {
+	path     string
+	handlers []HandlerFunc
+}
+
 // NewServer returns a new blank Engine instance without any middleware attached.
 func NewServer(conf *ServerConfig) *Engine {
 	if conf == nil {
@@ -181,6 +187,7 @@ func NewServer(conf *ServerConfig) *Engine {
 		methodConfigs:          make(map[string]*MethodConfig),
 		HandleMethodNotAllowed: true,
 		injections:             make([]injection, 0),
+		pathMiddlewares:        make(map[string][]HandlerFunc, 512),
 	}
 	if err := engine.SetConfig(conf); err != nil {
 		panic(err)
@@ -480,6 +487,10 @@ func (engine *Engine) Inject(pattern string, handlers ...HandlerFunc) {
 		pattern:  regexp.MustCompile(pattern),
 		handlers: handlers,
 	})
+}
+
+func (engine *Engine) PathMatch(path string, handlers ...HandlerFunc) {
+	engine.pathMiddlewares[path] = append(engine.pathMiddlewares[path], handlers...)
 }
 
 // ServeHTTP conforms to the http.Handler interface.
