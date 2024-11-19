@@ -272,7 +272,7 @@ func (t *bm) generateBMRoute(
 		t.P(`	}`)
 		if multipartStr != "" {
 			t.P(`	files := c.Request.MultipartForm.File["`, multipartStr, `"]`)
-			t.P(`	resp, err := `, svcName, `.`, methName, `(c, files, p)`)
+			t.P(`	resp, err := `, svcName, `.`, methName, `(c, files, &p)`)
 		} else if downloadStr != "" {
 			t.P(`	c.Writer.Header().Set("Content-Transfer-Encoding", "binary")`)
 			t.P(`	c.Writer.Header().Set("Content-Type", "application/octet-stream")`)
