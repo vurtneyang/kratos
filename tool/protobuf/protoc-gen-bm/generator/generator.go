@@ -272,13 +272,13 @@ func (t *bm) generateBMRoute(
 		t.P(`	}`)
 		if multipartStr != "" {
 			t.P(`	files := c.Request.MultipartForm.File["`, multipartStr, `"]`)
-			t.P(`	resp, err := `, svcName, `.`, methName, `(c, files, p)`)
+			t.P(`	resp, err := `, svcName, `.`, methName, `(c, files, &p)`)
 		} else if downloadStr != "" {
 			t.P(`	c.Writer.Header().Set("Content-Transfer-Encoding", "binary")`)
 			t.P(`	c.Writer.Header().Set("Content-Type", "application/octet-stream")`)
 			t.P(`	c.Writer.Header().Set("Access-Control-Expose-Headers", "Content-Disposition")`)
 			t.P(`	c.Writer.Header().Set("Content-Disposition", "attachment; filename=default.`, downloadStr, `")`)
-			t.P(`	err := `, svcName, `.`, methName, `(c, p)`)
+			t.P(`	err := `, svcName, `.`, methName, `(c, &p)`)
 			t.P(`	if err != nil {`)
 			t.P(`		c.JSON(nil, err)`)
 			t.P(`		return`)
