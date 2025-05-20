@@ -41,18 +41,18 @@ type nacosResolver struct {
 }
 
 func newNacosResolver(target resolver.Target, cc resolver.ClientConn) (*nacosResolver, error) {
-	if target.Scheme != "nacos" && target.Scheme != "nacoss" {
+	if target.URL.Scheme != "nacos" && target.URL.Scheme != "nacoss" {
 		return nil, ErrUnsupportSchema
 	}
-	u, err := url.Parse("http://test.com/" + target.Endpoint)
+	u, err := url.Parse("http://test.com/" + target.Endpoint())
 	if err != nil {
 		return nil, err
 	}
 	schema := "http://"
-	if target.Scheme == "nacoss" {
+	if target.URL.Scheme == "nacoss" {
 		schema = "https://"
 	}
-	client, err := nacos.NewServiceClient(schema + target.Authority + u.Path)
+	client, err := nacos.NewServiceClient(schema + target.URL.Host + u.Path)
 	if err != nil {
 		return nil, err
 	}
