@@ -53,6 +53,8 @@ type GaugeVec interface {
 	// Add adds the given value to the Gauge. (The value can be negative,
 	// resulting in a decrease of the Gauge.)
 	Add(v float64, labels ...string)
+	// Dec decrements the Gauge by 1. Use Sub to decrement it by arbitrary values.
+	Dec(labels ...string)
 }
 
 // gaugeVec gauge vec.
@@ -81,6 +83,11 @@ func NewGaugeVec(cfg *GaugeVecOpts) GaugeVec {
 // Inc Inc increments the counter by 1. Use Add to increment it by arbitrary.
 func (gauge *promGaugeVec) Inc(labels ...string) {
 	gauge.gauge.WithLabelValues(labels...).Inc()
+}
+
+// Dec decrements the counter by 1. Use Sub to decrement it by arbitrary values.
+func (gauge *promGaugeVec) Dec(labels ...string) {
+	gauge.gauge.WithLabelValues(labels...).Dec()
 }
 
 // Add Inc increments the counter by 1. Use Add to increment it by arbitrary.
