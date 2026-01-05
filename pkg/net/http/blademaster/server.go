@@ -462,7 +462,6 @@ func (engine *Engine) RunServer(server *http.Server, l net.Listener) (err error)
 	server.Handler = engine
 	engine.server.Store(server)
 	if err = server.Serve(l); err != nil {
-		err = errors.Wrapf(err, "listen server: %+v/%+v", server, l)
 		return
 	}
 	return
