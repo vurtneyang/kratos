@@ -23,6 +23,7 @@ const (
 	_httpHeaderChannel        = "channel"      // 下载渠道
 	_httpHeaderOAID           = "OAID"         // 设备标识
 	_httpHeaderUserKey        = "User-Key"
+	_httpHeaderSystemLanguage = "System-Language" // 系统语言
 )
 
 type Device struct {
@@ -43,6 +44,7 @@ type Device struct {
 	Channel        string `json:"channel"`
 	OAID           string `json:"OAID"`
 	UserKey        string `json:"User-Key"`
+	SystemLanguage string `json:"System-Language"`
 }
 
 func DeviceInfo(req *http.Request) (device *Device) {
@@ -64,5 +66,6 @@ func DeviceInfo(req *http.Request) (device *Device) {
 	device.Channel = req.Header.Get(_httpHeaderChannel)
 	device.OAID = req.Header.Get(_httpHeaderOAID)
 	device.UserKey = req.Header.Get(_httpHeaderUserKey)
+	device.SystemLanguage = req.Header.Get(_httpHeaderSystemLanguage)
 	return
 }
