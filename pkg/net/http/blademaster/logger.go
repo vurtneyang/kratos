@@ -86,6 +86,8 @@ func Logger() HandlerFunc {
 			log.KVFloat64("ts", dt.Seconds()),
 			log.KVString("source", "http-access-log"),
 			log.KVString("authorization", req.Header.Get("Authorization")),
+			log.KVString("ad", req.Header.Get(_httpHeaderAppDevice)),
+			log.KVString("av", req.Header.Get(_httpHeaderAppVersion)),
 			log.KVString("sign", req.Header.Get("X-Sign")),
 			log.KVString("root_err", rootErrMsg),
 			log.KVString("root_err_stack", rootStack),
